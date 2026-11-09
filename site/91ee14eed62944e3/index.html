@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>FL300 · Cleared to land</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=B612:ital,wght@0,400;0,700;1,400&family=B612+Mono&display=swap" rel="stylesheet">
+<style>
+  :root { --ink: #16181b; --paper: #f3f1ec; --dim: #6d7177; --line: #c9c5bb; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--paper); color: var(--ink); }
+  body { font-family: "B612", sans-serif; min-height: 100svh; }
+  main { max-width: 36rem; margin: 0 auto; padding: 40px 20px 48px; }
+  /* a flight progress strip */
+  .strip { display: grid; grid-template-columns: 1.4fr 1fr 1fr; border: 1.5px solid var(--ink); font-family: "B612 Mono", monospace; font-size: 12px; }
+  .strip div { padding: 6px 8px; border-right: 1px solid var(--line); }
+  .strip div:last-child { border-right: 0; }
+  .strip small { display: block; font-size: 9px; letter-spacing: .14em; color: var(--dim); text-transform: uppercase; }
+  .strip .cs { font-size: 17px; font-weight: 700; font-family: "B612", sans-serif; }
+  h1 { font-weight: 400; font-size: clamp(2rem, 9.5vw, 3.1rem); line-height: 1.12; margin: 3.4rem 0 3rem; letter-spacing: -.01em; }
+  h1 b { font-weight: 700; }
+  dl { margin: 0; border-top: 1px solid var(--ink); }
+  dl div { display: grid; grid-template-columns: 6.5rem 1fr; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  dt { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); padding-top: .25em; }
+  dd { margin: 0; font-size: 1.15rem; line-height: 1.4; }
+  .wx { font-family: "B612 Mono", monospace; font-size: 12px; color: var(--dim); margin-top: 2.6rem; line-height: 1.7; }
+  .end { margin-top: 3.4rem; font-size: .95rem; }
+</style>
+</head>
+<body data-stage="9">
+<main>
+  <div class="strip" aria-hidden="true">
+    <div><small>Callsign</small><span class="cs">YU-DNV</span></div>
+    <div><small>Type</small>PA38/L</div>
+    <div><small>Rwy</small>12L</div>
+  </div>
+
+  <h1><b>YU-DNV,</b><br>cleared to land.</h1>
+
+  <dl>
+    <div><dt>Where</dt><dd>Grand Central Pizza Bar<br>Belgrade<!-- DARIO: address --></dd></div>
+    <div><dt>When</dt><dd>Saturday 14 November 2026</dd></div>
+    <div><dt>Time</dt><dd>20:00</dd></div>
+    <div><dt>Occasion</dt><dd>Thirtieth birthday</dd></div>
+  </dl>
+
+  <p class="wx">LYBE 141900Z 12008KT CAVOK 06/02 Q1018 NOSIG<br>Thirty years in the air. Wheels down at eight.</p>
+
+  <p class="end">You made it all the way through. See you on the ground.<br>— Dario</p>
+</main>
+<script src="/js/common.js"></script>
+</body>
+</html>

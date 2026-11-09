@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="la">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>FL300 · VIII · MELITA</title>
+<!-- Seal: "Seal of Templars" (Sigillum Militum Xpisti / De Templo Christi), engraving from T. A. Archer & C. L. Kingsford, The Crusades (1894). Public domain, via Wikimedia Commons. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/fl300.css">
+<style>
+  :root { --ink: #1c1a18; --paper: #f4f2ec; --red: #8e1b17; --answer-font: "EB Garamond", serif; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--paper); color: var(--ink); }
+  body { font-family: "EB Garamond", Garamond, serif; }
+  main { max-width: 34rem; margin: 0 auto; padding: 48px 20px 24px; text-align: center; }
+  .cross { width: 92px; height: 92px; display: block; margin: 0 auto 2.4rem; }
+  .motto { font-style: italic; font-size: 1.15rem; line-height: 1.5; margin: 0 0 2.6rem; }
+  .seal { display: block; width: 100%; max-width: 420px; height: auto; margin: 0 auto 2.8rem; mix-blend-mode: multiply; }
+  .instr { font-variant: small-caps; letter-spacing: .14em; font-size: 1.35rem; margin: 0 0 1.6rem; }
+  .slots { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; max-width: 26rem; margin: 0 auto; }
+  .slot { aspect-ratio: 1; border: 1px solid var(--ink); }
+  .slots span { font-size: .95rem; letter-spacing: .08em; margin-top: .4rem; display: block; }
+  form.answer { text-align: left; }
+  footer { height: 3rem; }
+</style>
+</head>
+<body data-stage="8">
+<main>
+  <svg class="cross" viewBox="0 0 100 100" role="img" aria-label="Cross pattée">
+    <path fill="#8e1b17" d="M50 46 38 6Q50 10 62 6ZM54 50 94 38Q90 50 94 62ZM50 54 62 94Q50 90 38 94ZM46 50 6 62Q10 50 6 38Z"/>
+    <rect x="44" y="44" width="12" height="12" fill="#8e1b17" transform="rotate(45 50 50)"/>
+  </svg>
+  <p class="motto">Non nobis, Domine, non nobis,<br>sed nomini tuo da gloriam.</p>
+  <img class="seal" src="/img/templar-seal.jpg" width="556" height="281" alt="The seal of the Knights Templar: two knights on one horse, and the dome of the Temple.">
+  <p class="instr">Fragmenta collige.</p>
+  <div class="slots" aria-label="Six empty places, numbered I to VI">
+    <div><div class="slot"></div><span>I</span></div>
+    <div><div class="slot"></div><span>II</span></div>
+    <div><div class="slot"></div><span>III</span></div>
+    <div><div class="slot"></div><span>IV</span></div>
+    <div><div class="slot"></div><span>V</span></div>
+    <div><div class="slot"></div><span>VI</span></div>
+  </div>
+  <form class="answer" autocomplete="off">
+    <label for="ans">Verbum</label>
+    <div class="row"><input id="ans" autocapitalize="characters" spellcheck="false"><button type="submit">Intra</button></div>
+    <output class="verdict" aria-live="polite"></output>
+  </form>
+  <footer></footer>
+</main>
+<script src="/js/common.js"></script>
+</body>
+</html>

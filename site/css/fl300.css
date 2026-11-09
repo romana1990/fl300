@@ -1,0 +1,21 @@
+/* The only shared styling: answer box + footer glyph. Pages set --ink, --paper, --rule, --answer-font. */
+form.answer { margin: 2.5rem auto 0; max-width: 26rem; font-family: var(--answer-font, inherit); color: var(--ink, inherit); }
+form.answer label { display: block; font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; margin-bottom: .5rem; }
+form.answer .row { display: flex; gap: 0; border: 1.5px solid currentColor; }
+form.answer input {
+  flex: 1; min-width: 0; min-height: 48px; padding: .6rem .8rem; border: 0; border-radius: 0;
+  font: inherit; font-size: 1.1rem; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ink, inherit); background: var(--paper, transparent); -webkit-appearance: none;
+}
+form.answer button {
+  min-width: 56px; min-height: 48px; padding: 0 1rem; border: 0; border-left: 1.5px solid currentColor; border-radius: 0;
+  font: inherit; font-size: .85rem; letter-spacing: .14em; text-transform: uppercase; cursor: pointer;
+  color: var(--paper, #fff); background: var(--ink, #000);
+}
+form.answer input:focus-visible, form.answer button:focus-visible { outline: 2px solid var(--ink, #000); outline-offset: 3px; }
+form.answer.busy button { opacity: .5; }
+form.answer .verdict { display: block; min-height: 1.5em; margin-top: .6rem; font-style: italic; letter-spacing: .04em; }
+
+footer[data-frag] { margin: 4rem 0 1.5rem; display: flex; justify-content: center; }
+footer .frag { display: inline-flex; align-items: center; gap: .6rem; font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; opacity: .75; }
+footer .frag img { width: 28px; height: 28px; }

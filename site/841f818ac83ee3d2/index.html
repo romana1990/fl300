@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>FL300 · V · CINEMA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/fl300.css">
+<style>
+  :root { --ink: #1a1816; --paper: #f1ebdc; --red: #b3261e; --answer-font: "Oswald", sans-serif; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #151414; color: var(--ink); }
+  body { font-family: "Oswald", "Arial Narrow", sans-serif; }
+  .screen { background: #000; }
+  .screen video { display: block; width: 100%; max-width: 900px; margin: 0 auto; aspect-ratio: 16 / 9; background: #000; }
+  .missing { display: none; color: #888; text-align: center; padding: 3rem 1rem; font-size: .9rem; letter-spacing: .1em; text-transform: uppercase; }
+  .screen.err video { display: none; } .screen.err .missing { display: block; }
+  .card { max-width: 560px; margin: 0 auto; background: var(--paper); padding: 1.6rem 1.4rem 1.2rem; }
+  .top { display: flex; justify-content: space-between; font-size: .78rem; letter-spacing: .2em; text-transform: uppercase; border-bottom: 2px solid var(--ink); padding-bottom: .5rem; }
+  .top b { color: var(--red); font-weight: 600; }
+  h1 { font-weight: 600; font-size: clamp(2.6rem, 14vw, 4.4rem); line-height: .9; letter-spacing: .02em; text-transform: uppercase; margin: 1rem 0 .3rem; }
+  .instr { font-size: 1.25rem; letter-spacing: .06em; margin: 0 0 1.4rem; text-transform: uppercase; color: var(--red); }
+  ol { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
+  li { display: grid; grid-template-columns: 2.2rem 1fr auto; align-items: end; gap: .6rem; padding: .7rem 0 .55rem; border-bottom: 1px solid var(--ink); }
+  li .n { font-size: 1.7rem; font-weight: 600; line-height: 1; }
+  li .blanks { display: flex; gap: 5px; flex-wrap: wrap; padding-bottom: 4px; }
+  li .blanks i { width: clamp(14px, 4.6vw, 22px); border-bottom: 2px solid var(--ink); height: 1.2rem; }
+  li .num { font-size: 1.35rem; letter-spacing: .04em; color: var(--red); min-width: 2.4rem; text-align: right; }
+  .small { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; margin: 1.1rem 0 0; display: flex; justify-content: space-between; }
+  .card form.answer { margin-top: 2rem; }
+  footer[data-frag] .frag { color: #cfc8b8; } footer[data-frag] .frag img { filter: invert(.85); }
+</style>
+</head>
+<body data-stage="5">
+<div class="screen" id="screen">
+  <video id="reel" src="/v/reel.mp4" controls playsinline preload="metadata"></video>
+  <p class="missing">Reel not loaded — /v/reel.mp4</p>
+</div>
+<main class="card">
+  <div class="top"><span>Programme</span><b>One night only</b></div>
+  <h1>Six reels</h1>
+  <p class="instr">Listen. Recognise. Identify.</p>
+  <ol>
+    <li><span class="n">1</span><span class="blanks"><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="num">II</span></li>
+    <li><span class="n">2</span><span class="blanks"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="num">III</span></li>
+    <li><span class="n">3</span><span class="blanks"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="num">V</span></li>
+    <li><span class="n">4</span><span class="blanks"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="num">III</span></li>
+    <li><span class="n">5</span><span class="blanks"><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="num">VI</span></li>
+    <li><span class="n">6</span><span class="blanks"><i></i><i></i><i></i><i></i></span><span class="num">I</span></li>
+  </ol>
+  <p class="small"><span>Doors 20:00</span><span>No admission after the lights go down</span></p>
+  <form class="answer" autocomplete="off">
+    <label for="ans">Destination</label>
+    <div class="row"><input id="ans" autocapitalize="characters" spellcheck="false"><button type="submit">Enter</button></div>
+    <output class="verdict" aria-live="polite"></output>
+  </form>
+</main>
+<footer data-frag="iv"></footer>
+<script src="/js/common.js"></script>
+<script>
+  const v = document.getElementById('reel');
+  const miss = () => document.getElementById('screen').classList.add('err');
+  v.addEventListener('error', miss); if (v.error) miss();
+</script>
+</body>
+</html>

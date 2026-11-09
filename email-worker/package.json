@@ -1,0 +1,8 @@
+{
+  "name": "poirot",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "postal-mime": "^4.2.0"
+  }
+}

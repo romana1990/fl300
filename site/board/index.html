@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>FL300 · Board</title>
+<style>
+  body { margin: 0; padding: 16px; font: 14px/1.4 "Helvetica Neue", Arial, sans-serif; background: #fff; color: #111; }
+  h1 { font-size: 18px; margin: 0 0 4px; } h2 { font-size: 15px; margin: 28px 0 6px; }
+  .meta { color: #777; font-size: 12px; margin-bottom: 12px; }
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; min-width: 100%; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #ddd; white-space: nowrap; vertical-align: top; }
+  th { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: #666; }
+  td.n { font-variant-numeric: tabular-nums; }
+  tr.hot td { background: #ffe9a8; }
+  td.sub { white-space: normal; min-width: 14em; }
+  .err { color: #b00; }
+</style>
+</head>
+<body>
+<h1>FL300 board</h1>
+<div class="meta" id="meta">Loading…</div>
+<div class="scroll"><table id="teams"></table></div>
+<h2>Poirot's post</h2>
+<div class="meta">Highlighted rows got no automatic reply: answer them by hand from Proton.</div>
+<div class="scroll"><table id="post"></table></div>
+<script>
+const NAMES = { 1: 'Door', 2: 'Navigatio', 3: 'Corvinus', 4: 'Columna', 5: 'Cinema', 6: 'Orient', 7: 'Cruciverbum', 8: 'Melita', 9: 'Invite' };
+const k = new URLSearchParams(location.search).get('k') || '';
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const t = ms => new Date(ms).toLocaleString('sr-Latn', { weekday: 'short', hour: '2-digit', minute: '2-digit' });
+const dur = ms => { const m = Math.round(ms / 60000); return m < 60 ? m + 'm' : Math.floor(m / 60) + 'h' + String(m % 60).padStart(2, '0'); };
+async function load() {
+  try {
+    const r = await fetch('/api/board?k=' + encodeURIComponent(k), { cache: 'no-store' });
+    if (!r.ok) throw new Error(r.status === 403 ? 'Wrong or missing ?k=' : 'HTTP ' + r.status);
+    const d = await r.json();
+    const teams = d.teams.map(m => { const s = Object.keys(m.st).map(Number).sort((a, b) => a - b); return { ...m, s, last: s[s.length - 1] }; })
+      .sort((a, b) => b.last - a.last || a.st[a.last] - b.st[b.last]);
+    let h = '<tr><th>Callsign</th><th>Stage</th><th>Reached</th><th>Stuck for</th>' + Object.values(NAMES).slice(1).map(n => `<th>${n}</th>`).join('') + '</tr>';
+    for (const m of teams) {
+      h += `<tr><td>${esc(m.c)}</td><td>${m.last} ${NAMES[m.last]}</td><td class="n">${t(m.st[m.last])}</td><td class="n">${m.last < 9 ? dur(d.now - m.st[m.last]) : '—'}</td>`;
+      for (let i = 2; i <= 9; i++) { const a = m.st[i], p = m.st[i - 1]; h += `<td class="n">${a ? (p ? dur(a - p) : '✓') : ''}</td>`; }
+      h += '</tr>';
+    }
+    document.getElementById('teams').innerHTML = h;
+    let p = '<tr><th>Time</th><th>From</th><th>Subject</th><th>Outcome</th></tr>';
+    for (const e of d.post) p += `<tr class="${['correct', 'stranger', 'wrong'].includes(e.outcome) ? '' : 'hot'}"><td class="n">${t(e.time)}</td><td>${esc(e.from)}</td><td class="sub">${esc(e.subject)}</td><td>${esc(e.outcome)}</td></tr>`;
+    document.getElementById('post').innerHTML = p;
+    document.getElementById('meta').textContent = `${teams.length} teams · updated ${new Date().toLocaleTimeString('sr-Latn')} · refreshes every 60 s · per-stage columns show time spent on the previous stage`;
+  } catch (e) { document.getElementById('meta').innerHTML = `<span class="err">${esc(e.message)}</span>`; }
+}
+load(); setInterval(load, 60000);
+</script>
+</body>
+</html>

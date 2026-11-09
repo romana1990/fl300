@@ -1,0 +1,10 @@
+name = "poirot"
+main = "src/index.js"
+compatibility_date = "2025-10-01"
+
+[vars]
+FORWARD_TO = "CHANGE-ME@proton.me" # Dario: your Proton address (must be a verified destination in Email Routing)
+
+[[kv_namespaces]]
+binding = "FL300"
+id = "CHANGE-ME" # the same KV namespace the Pages project uses for the board

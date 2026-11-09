@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>FL300 · II · NAVIGATIO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=B612:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/fl300.css">
+<style>
+  @font-face { font-family: DSEG7; src: url(/fonts/DSEG7Classic-Bold.woff2) format('woff2'); font-display: block; }
+  :root {
+    --bg: #0d0e0f; --panel: #2a2c2e; --panel-hi: #3a3d40; --panel-lo: #17181a; --bezel: #111213;
+    --lcd: #120b07; --seg: #ff6b1c; --ghost: #2b160b; --label: #b9bcbf; --label-dim: #7c8084;
+    --ink: #e8e8e6; --paper: #0d0e0f; --answer-font: "B612", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body { font-family: "B612", "Helvetica Neue", Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
+  main { max-width: 760px; margin: 0 auto; padding: 16px; }
+
+  /* ---------- the radio stack ---------- */
+  .stack { background: var(--panel); border: 1px solid var(--panel-lo); border-top-color: var(--panel-hi); border-left-color: var(--panel-hi); padding: 12px; user-select: none; -webkit-user-select: none; }
+  .screw { width: 7px; height: 7px; border-radius: 50%; background: #1d1e20; border: 1px solid #47494c; display: inline-block; }
+  .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .pwr {
+    width: 64px; height: 52px; border: 1px solid #000; border-radius: 3px; background: #333538;
+    border-top-color: #55585b; color: var(--label); font: 700 12px "B612", sans-serif; letter-spacing: .08em;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer;
+  }
+  .pwr .lamp { width: 26px; height: 5px; background: #1b2a1b; border: 1px solid #0a0f0a; }
+  .pwr[aria-pressed="true"] .lamp { background: #7dff4a; border-color: #2e5a1c; }
+  .pwr:active { background: #2c2e30; }
+  .xpdr { display: flex; align-items: center; gap: 8px; font-size: 10px; letter-spacing: .14em; color: var(--label-dim); }
+
+  section.band { border-top: 1px solid var(--panel-lo); box-shadow: inset 0 1px 0 var(--panel-hi); padding-top: 8px; margin-top: 8px; }
+  .heads { display: grid; grid-template-columns: 1fr 44px 1fr; gap: 6px; font-size: 9px; letter-spacing: .14em; color: var(--label-dim); text-transform: uppercase; margin-bottom: 4px; }
+  .heads span:last-child { grid-column: 3; }
+  .rrow { display: grid; grid-template-columns: 1fr 44px 1fr; gap: 6px; align-items: center; margin-bottom: 6px; }
+  .lcd {
+    position: relative; height: 46px; background: var(--lcd); border: 2px solid var(--bezel); outline: 1px solid #45484b;
+    display: flex; align-items: center; justify-content: flex-end; padding: 0 8px 0 30px; overflow: hidden;
+  }
+  .lcd .tag { position: absolute; left: 5px; top: 6px; font: 700 9px "B612", sans-serif; color: var(--seg); letter-spacing: .02em; opacity: 0; }
+  .lcd .rx { position: absolute; left: 5px; bottom: 6px; font: 700 8px "B612", sans-serif; color: var(--seg); opacity: 0; }
+  .on .lcd .tag, .on .lcd.rxing .rx { opacity: 1; }
+  .lcd .ghost, .lcd .digits, .lcd input {
+    font: 21px DSEG7, monospace; letter-spacing: .02em; text-align: right; width: 100%;
+  }
+  .lcd .ghost { position: absolute; right: 8px; color: var(--ghost); width: auto; pointer-events: none; }
+  .lcd .digits { position: relative; color: var(--seg); }
+  .lcd input { position: relative; background: transparent; border: 0; padding: 0; margin: 0; color: var(--seg); caret-color: var(--seg); outline: none; -webkit-appearance: none; border-radius: 0; }
+  .lcd input:disabled { color: transparent; -webkit-text-fill-color: transparent; opacity: 1; }
+  .lcd input:focus { background: #1d110a; }
+  .swap {
+    height: 40px; border: 1px solid #000; border-top-color: #55585b; border-radius: 3px; background: #333538;
+    color: var(--label); font-size: 20px; line-height: 1; cursor: pointer; padding: 0;
+  }
+  .swap:active { background: #26282a; }
+  .controls { display: flex; align-items: center; justify-content: flex-end; gap: 14px; margin: 2px 0 4px; }
+  .controls .hint { flex: 1; font-size: 9px; letter-spacing: .12em; color: var(--label-dim); text-transform: uppercase; line-height: 1.5; }
+  .sel {
+    width: 34px; height: 64px; background: #18191b; border: 1px solid #000; border-top-color: #4a4d50; position: relative; cursor: pointer; padding: 0;
+    font: 700 10px "B612", sans-serif; color: var(--label-dim);
+  }
+  .sel .slot { position: absolute; left: 13px; top: 9px; width: 6px; height: 44px; background: #050505; }
+  .sel .bat { position: absolute; left: 7px; width: 18px; height: 16px; background: #4a4d50; border: 1px solid #000; top: 8px; transition: top .12s; }
+  .sel .bat::after { content: ""; position: absolute; left: 6px; top: 5px; width: 4px; height: 4px; background: var(--seg); }
+  .sel[data-v="2"] .bat { top: 38px; }
+  .sel .n1, .sel .n2 { position: absolute; right: -14px; } .sel .n1 { top: 10px; } .sel .n2 { top: 40px; }
+  .knob { width: 120px; height: 120px; touch-action: none; cursor: grab; flex: none; }
+  .knob:active { cursor: grabbing; }
+
+  .bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+  .xpdr .lcd { width: 108px; padding-left: 8px; }
+
+  /* ---------- the chart ---------- */
+  .brief { margin: 28px 0 10px; font-size: 15px; letter-spacing: .02em; }
+  .brief b { font-weight: 700; }
+  .chart { background: #fff; border: 1px solid #2a2c2e; }
+  .chart .tools { display: flex; justify-content: space-between; align-items: center; background: #f2f2ef; color: #222; padding: 6px 8px; font-size: 12px; border-bottom: 1px solid #ccc; }
+  .chart .tools button { min-width: 44px; min-height: 40px; font: 700 18px "B612", sans-serif; background: #fff; border: 1px solid #999; border-radius: 0; color: #111; margin-left: 4px; cursor: pointer; }
+  .chart .tools a { color: #111; }
+  .chart .view { overflow: auto; max-height: min(78vh, 900px); -webkit-overflow-scrolling: touch; touch-action: pan-x pan-y pinch-zoom; }
+  .chart img { display: block; width: 100%; height: auto; }
+  footer[data-frag] .frag img { filter: invert(1); }
+  @media (max-width: 420px) {
+    .lcd .ghost, .lcd .digits, .lcd input { font-size: 17px; }
+    .lcd { padding-left: 24px; height: 42px; }
+    .heads, .rrow { grid-template-columns: 1fr 38px 1fr; gap: 5px; }
+    .knob { width: 104px; height: 104px; }
+  }
+</style>
+</head>
+<body data-stage="2">
+<main>
+  <div class="stack" id="stack">
+    <div class="top">
+      <button class="pwr" id="pwr" aria-pressed="false" aria-label="Power"><span class="lamp"></span>PWR</button>
+      <span class="screw"></span>
+    </div>
+
+    <section class="band" data-band="com">
+      <div class="heads"><span>Comm active</span><span>Comm standby</span></div>
+      <div class="rrow" data-i="1">
+        <div class="lcd act"><span class="tag">COM1</span><span class="rx">RX</span><span class="ghost">888.888</span><span class="digits"></span></div>
+        <button class="swap" aria-label="Swap COM1">&#x2194;</button>
+        <label class="lcd sby"><span class="ghost">888.888</span><input inputmode="decimal" aria-label="COM1 standby frequency" disabled></label>
+      </div>
+      <div class="rrow" data-i="2">
+        <div class="lcd act"><span class="tag">COM2</span><span class="rx">RX</span><span class="ghost">888.888</span><span class="digits"></span></div>
+        <button class="swap" aria-label="Swap COM2">&#x2194;</button>
+        <label class="lcd sby"><span class="ghost">888.888</span><input inputmode="decimal" aria-label="COM2 standby frequency" disabled></label>
+      </div>
+      <div class="controls">
+        <span class="hint">Outer ring MHz<br>Inner knob kHz</span>
+        <button class="sel" data-v="1" aria-label="COM knob controls COM1"><span class="slot"></span><span class="bat"></span><span class="n1">1</span><span class="n2">2</span></button>
+        <svg class="knob" viewBox="0 0 120 120" aria-label="COM tuning knob" role="slider"></svg>
+      </div>
+    </section>
+
+    <section class="band" data-band="nav">
+      <div class="heads"><span>Nav active</span><span>Nav standby</span></div>
+      <div class="rrow" data-i="1">
+        <div class="lcd act"><span class="tag">NAV1</span><span class="rx">ID</span><span class="ghost">888.88</span><span class="digits"></span></div>
+        <button class="swap" aria-label="Swap NAV1">&#x2194;</button>
+        <label class="lcd sby"><span class="ghost">888.88</span><input inputmode="decimal" aria-label="NAV1 standby frequency" disabled></label>
+      </div>
+      <div class="rrow" data-i="2">
+        <div class="lcd act"><span class="tag">NAV2</span><span class="rx">ID</span><span class="ghost">888.88</span><span class="digits"></span></div>
+        <button class="swap" aria-label="Swap NAV2">&#x2194;</button>
+        <label class="lcd sby"><span class="ghost">888.88</span><input inputmode="decimal" aria-label="NAV2 standby frequency" disabled></label>
+      </div>
+      <div class="controls">
+        <span class="hint">Outer ring MHz<br>Inner knob kHz</span>
+        <button class="sel" data-v="1" aria-label="NAV knob controls NAV1"><span class="slot"></span><span class="bat"></span><span class="n1">1</span><span class="n2">2</span></button>
+        <svg class="knob" viewBox="0 0 120 120" aria-label="NAV tuning knob" role="slider"></svg>
+      </div>
+    </section>
+
+    <div class="bottom">
+      <span class="screw"></span>
+      <div class="xpdr">TRANSPONDER <div class="lcd"><span class="ghost">8888</span><span class="digits" id="sq"></span></div></div>
+    </div>
+  </div>
+
+  <p class="brief"><b>YU-DNV, contact Beograd Radar.</b></p>
+
+  <div class="chart">
+    <div class="tools">
+      <a href="/chart/LYBE_ILS_RWY12L.pdf" target="_blank" rel="noopener">AD 2 LYBE 12.1–1 · PDF</a>
+      <span><button id="zout" aria-label="Zoom out">&minus;</button><button id="zin" aria-label="Zoom in">+</button></span>
+    </div>
+    <div class="view" id="view"><img id="chartimg" src="/chart/lybe-ils-12l.jpg" width="2067" height="2924" alt="Instrument approach chart, Beograd Nikola Tesla, ILS or LOC runway 12L"></div>
+  </div>
+
+  <form class="answer" autocomplete="off">
+    <label for="ans">Read back</label>
+    <div class="row"><input id="ans" autocapitalize="characters" spellcheck="false"><button type="submit">Send</button></div>
+    <output class="verdict" aria-live="polite"></output>
+  </form>
+
+  <footer data-frag="i"></footer>
+</main>
+
+<script src="/js/common.js"></script>
+<script>
+// ---------- radio model ----------
+const BANDS = {
+  com: { lo: 118, hi: 136, step: 25, dec: 3, active: ['121.900', '127.125'], standby: ['122.150', '134.350'] },
+  nav: { lo: 108, hi: 117, step: 50, dec: 2, active: ['109.10', '112.60'], standby: ['114.30', '111.10'] },
+};
+// NAV idents (printed on the chart, so they may live here)
+const IDENTS = { '112.05': 'BGD', '110.30': 'YUB', '116.60': 'VAL' };
+let powered = false, listening = null; // listening = {band, i}
+
+// frequency as integer kHz
+const toK = s => Math.round(parseFloat(s) * 1000);
+const fmt = (k, b) => (k / 1000).toFixed(BANDS[b].dec);
+function parse(text, b) {
+  const B = BANDS[b]; let t = String(text).trim().replace(',', '.');
+  if (/^\d{3}$/.test(t)) t += '.0';
+  if (/^\d{5,6}$/.test(t)) t = t.slice(0, 3) + '.' + t.slice(3);
+  if (!/^\d{3}\.\d{1,3}$/.test(t)) return null;
+  const k = toK(t), mhz = Math.floor(k / 1000), khz = k % 1000;
+  if (mhz < B.lo || mhz > B.hi || (b === 'com' && k > 136975) || (b === 'nav' && k > 117950)) return null;
+  if (b === 'com') { // 25 kHz channels; tolerate 8.33-style typing like 121.5 or 118.10
+    const snapped = Math.round(khz / 25) * 25; if (Math.abs(snapped - khz) > 5) return null; return mhz * 1000 + snapped;
+  }
+  if (khz % 50) return null; return k;
+}
+function tune(k, b, ring, dir) { // ring: 'outer' MHz, 'inner' kHz; no carry, like the real box
+  const B = BANDS[b], span = B.hi - B.lo + 1; let mhz = Math.floor(k / 1000), khz = k % 1000;
+  if (ring === 'outer') mhz = B.lo + ((mhz - B.lo + dir) % span + span) % span;
+  else { const n = 1000 / B.step; khz = (((khz / B.step + dir) % n + n) % n) * B.step; }
+  return mhz * 1000 + khz;
+}
+
+const state = {}; for (const b in BANDS) state[b] = { act: BANDS[b].active.map(toK), sby: BANDS[b].standby.map(toK), sel: 0 };
+const $ = (s, el = document) => el.querySelector(s), $$ = (s, el = document) => [...el.querySelectorAll(s)];
+
+function render() {
+  for (const b in BANDS) {
+    const sec = $(`[data-band=${b}]`);
+    $$('.rrow', sec).forEach((row, i) => {
+      $('.act .digits', row).textContent = powered ? fmt(state[b].act[i], b) : '';
+      const inp = $('.sby input', row);
+      if (document.activeElement !== inp) inp.value = powered ? fmt(state[b].sby[i], b) : '';
+      inp.disabled = !powered;
+      $('.act', row).classList.toggle('rxing', !!listening && listening.b === b && listening.i === i);
+    });
+  }
+  $('#sq').textContent = powered ? '7000' : '';
+  $('#stack').classList.toggle('on', powered);
+}
+
+// ---------- audio ----------
+let ac, master, noiseGain, identTimer, player;
+function initAudio() {
+  if (ac) return;
+  try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch {}
+  ac = new (window.AudioContext || window.webkitAudioContext)();
+  master = ac.createGain(); master.gain.value = 0.9; master.connect(ac.destination);
+  // soft radio static: white noise through a band-pass
+  const buf = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  const src = ac.createBufferSource(); src.buffer = buf; src.loop = true;
+  const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1800; bp.Q.value = 0.6;
+  noiseGain = ac.createGain(); noiseGain.gain.value = 0;
+  src.connect(bp).connect(noiseGain).connect(master); src.start();
+  player = new Audio(); player.loop = true; player.preload = 'auto'; player.playsInline = true;
+  player.play().catch(() => {}); player.pause(); // unlock on iOS within the PWR gesture
+}
+function setStatic(v) { if (ac) noiseGain.gain.setTargetAtTime(v, ac.currentTime, 0.05); }
+function stopAll() { clearTimeout(identTimer); identTimer = null; if (player) { player.pause(); player.removeAttribute('src'); } setStatic(0); }
+
+function morse(text) {
+  const M = { A: '.-', B: '-...', C: '-.-.', D: '-..', E: '.', G: '--.', L: '.-..', U: '..-', V: '...-', Y: '-.--' };
+  const dot = 0.12, t0 = ac.currentTime + 0.2; let t = t0;
+  const osc = ac.createOscillator(), g = ac.createGain(); osc.frequency.value = 1020; g.gain.value = 0;
+  osc.connect(g).connect(master);
+  for (const ch of text) {
+    for (const s of M[ch]) { const len = s === '.' ? dot : 3 * dot;
+      g.gain.setTargetAtTime(0.22, t, 0.004); g.gain.setTargetAtTime(0, t + len, 0.004); t += len + dot; }
+    t += 2 * dot; // 3 dots between letters (1 already added)
+  }
+  osc.start(t0); osc.stop(t + 0.1);
+  return t - t0;
+}
+async function listen(b, i) {
+  listening = { b, i }; render();
+  if (!powered || !ac) return;
+  stopAll(); ac.resume();
+  const k = state[b].act[i], canon = FL.freq(k / 1000, b === 'nav');
+  if (b === 'nav') {
+    const id = IDENTS[canon];
+    setStatic(id ? 0.02 : 0.06);
+    if (id) { const loop = () => { morse(id); identTimer = setTimeout(loop, 8000); }; loop(); }
+    return;
+  }
+  setStatic(0.06);
+  const url = await FL.audio(canon);
+  if (listening.b !== b || listening.i !== i || state[b].act[i] !== k) return; // retuned meanwhile
+  player.src = url;
+  player.onerror = () => {}; // 404 → keep the static
+  player.oncanplay = () => { setStatic(0.012); };
+  player.play().catch(() => {});
+}
+
+// ---------- wiring ----------
+$('#pwr').addEventListener('click', () => {
+  powered = !powered; $('#pwr').setAttribute('aria-pressed', powered);
+  if (powered) { initAudio(); ac.resume(); listen('com', 0); } else { stopAll(); listening = null; }
+  render();
+});
+for (const b in BANDS) {
+  const sec = $(`[data-band=${b}]`);
+  $$('.rrow', sec).forEach((row, i) => {
+    $('.swap', row).addEventListener('click', () => {
+      if (!powered) return;
+      const s = state[b]; [s.act[i], s.sby[i]] = [s.sby[i], s.act[i]]; listen(b, i);
+    });
+    const inp = $('.sby input', row);
+    inp.addEventListener('focus', () => { selectRow(b, i); inp.select(); });
+    const commit = () => { const k = parse(inp.value, b); if (k) state[b].sby[i] = k; inp.blur(); render(); };
+    inp.addEventListener('change', commit);
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); commit(); } });
+    inp.addEventListener('blur', () => setTimeout(render, 0));
+  });
+  const sel = $('.sel', sec);
+  sel.addEventListener('click', () => selectRow(b, state[b].sel ? 0 : 1));
+  makeKnob($('.knob', sec), (ring, dir) => {
+    if (!powered) return; const s = state[b]; s.sby[s.sel] = tune(s.sby[s.sel], b, ring, dir); render();
+  });
+}
+function selectRow(b, i) {
+  state[b].sel = i; const sel = $(`[data-band=${b}] .sel`);
+  sel.dataset.v = i + 1; sel.setAttribute('aria-label', `${b.toUpperCase()} knob controls ${b.toUpperCase()}${i + 1}`);
+}
+
+// dual concentric knob: drag to rotate (30° per click), or tap left/right half
+function makeKnob(svg, step) {
+  const NS = 'http://www.w3.org/2000/svg', el = (n, a) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); return e; };
+  svg.append(el('circle', { cx: 60, cy: 60, r: 58, fill: '#1a1b1d', stroke: '#000' }));
+  const outer = el('g', {}), inner = el('g', {});
+  outer.append(el('circle', { cx: 60, cy: 60, r: 54, fill: '#2f3134', stroke: '#111' }));
+  for (let a = 0; a < 360; a += 10) { const r = a * Math.PI / 180; outer.append(el('line', { x1: 60 + 47 * Math.cos(r), y1: 60 + 47 * Math.sin(r), x2: 60 + 54 * Math.cos(r), y2: 60 + 54 * Math.sin(r), stroke: '#151617', 'stroke-width': 2.4 })); }
+  inner.append(el('circle', { cx: 60, cy: 60, r: 31, fill: '#3b3e41', stroke: '#111', 'stroke-width': 1.5 }));
+  for (let a = 0; a < 360; a += 15) { const r = a * Math.PI / 180; inner.append(el('line', { x1: 60 + 26 * Math.cos(r), y1: 60 + 26 * Math.sin(r), x2: 60 + 31 * Math.cos(r), y2: 60 + 31 * Math.sin(r), stroke: '#1d1e20', 'stroke-width': 2 })); }
+  inner.append(el('circle', { cx: 60, cy: 60, r: 22, fill: '#45484b' }), el('rect', { x: 58.5, y: 40, width: 3, height: 10, fill: '#c9c9c4' }));
+  svg.append(outer, inner);
+  const rot = { outer: 0, inner: 0 }, apply = () => { outer.setAttribute('transform', `rotate(${rot.outer} 60 60)`); inner.setAttribute('transform', `rotate(${rot.inner} 60 60)`); };
+  let drag = null;
+  const pt = e => { const b = svg.getBoundingClientRect(); return [(e.clientX - b.left) / b.width * 120 - 60, (e.clientY - b.top) / b.height * 120 - 60]; };
+  svg.addEventListener('pointerdown', e => {
+    const [x, y] = pt(e); const ring = Math.hypot(x, y) < 34 ? 'inner' : 'outer';
+    drag = { ring, a: Math.atan2(y, x), acc: 0, moved: false, x }; svg.setPointerCapture(e.pointerId); e.preventDefault();
+  });
+  svg.addEventListener('pointermove', e => {
+    if (!drag) return; const [x, y] = pt(e), a = Math.atan2(y, x);
+    let d = (a - drag.a) * 180 / Math.PI; if (d > 180) d -= 360; if (d < -180) d += 360;
+    drag.a = a; drag.acc += d; rot[drag.ring] += d; apply();
+    while (Math.abs(drag.acc) >= 30) { const dir = Math.sign(drag.acc); drag.acc -= dir * 30; drag.moved = true; step(drag.ring, dir); }
+    if (Math.abs(drag.acc) > 6) drag.moved = true;
+  });
+  const end = () => {
+    if (drag && !drag.moved) { const dir = drag.x < 0 ? -1 : 1; rot[drag.ring] += dir * 30; apply(); step(drag.ring, dir); }
+    drag = null;
+  };
+  svg.addEventListener('pointerup', end); svg.addEventListener('pointercancel', () => drag = null);
+  svg.addEventListener('wheel', e => { e.preventDefault(); const [x, y] = pt(e); const ring = Math.hypot(x, y) < 34 ? 'inner' : 'outer'; const dir = e.deltaY > 0 ? -1 : 1; rot[ring] += dir * 30; apply(); step(ring, dir); }, { passive: false });
+}
+
+// chart zoom (native pinch also works)
+let z = 1; const img = $('#chartimg');
+const zoom = f => { const v = $('#view'), cx = (v.scrollLeft + v.clientWidth / 2) / (img.clientWidth || 1), cy = (v.scrollTop + v.clientHeight / 2) / (img.clientHeight || 1);
+  z = Math.min(4, Math.max(1, z * f)); img.style.width = (z * 100) + '%';
+  v.scrollLeft = cx * img.clientWidth - v.clientWidth / 2; v.scrollTop = cy * img.clientHeight - v.clientHeight / 2; };
+$('#zin').onclick = () => zoom(1.5); $('#zout').onclick = () => zoom(1 / 1.5);
+render();
+</script>
+</body>
+</html>

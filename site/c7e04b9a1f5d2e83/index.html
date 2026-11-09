@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>FL300 · VII · CRVCIVERBVM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;800&family=Barlow+Semi+Condensed:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/fl300.css">
+<style>
+  :root { --paper: #f3f0e6; --ink: #1b1a17; --cluebg: #dcd8cb; --shade: #b9b3a2; --hl: #f6dc7a; --hl2: #fbefc0; --answer-font: "Barlow Condensed", sans-serif; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--paper); color: var(--ink); }
+  body { font-family: "Barlow Condensed", "Arial Narrow", sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 16px; }
+  .mast { display: flex; align-items: baseline; justify-content: space-between; border-bottom: 3px solid var(--ink); padding-bottom: 2px; }
+  .mast h1 { margin: 0; font-weight: 800; font-size: clamp(2rem, 11vw, 3.6rem); letter-spacing: -.01em; line-height: .9; text-transform: uppercase; }
+  .mast .no { font-weight: 600; font-size: .95rem; text-align: right; line-height: 1.1; }
+  .sub { display: flex; justify-content: space-between; font-weight: 500; font-size: .9rem; border-bottom: 1px solid var(--ink); padding: 3px 0; margin-bottom: 12px; }
+
+  .wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .grid { display: grid; border: 2px solid var(--ink); background: var(--ink); gap: 1px; width: 100%; min-width: 0; user-select: none; -webkit-user-select: none; }
+  .zoomed .grid { width: 170%; }
+  .cell { position: relative; aspect-ratio: 1; background: #fffdf6; }
+  .cell.C { background: var(--cluebg); display: flex; flex-direction: column; overflow: visible; }
+  .cell.C .q { flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; font-weight: 500; font-size: clamp(5px, 1.28vw, 9.2px); line-height: 1.02; padding: 1px; overflow: hidden; hyphens: auto; -webkit-hyphens: auto; word-break: break-word; }
+  .zoomed .cell.C .q { font-size: clamp(8px, 2.2vw, 12px); }
+  .cell.C .q + .q { border-top: 1px solid #8f8a7b; }
+  .cell.L { cursor: pointer; }
+  .cell.L .ch { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font: 600 clamp(12px, 4.2vw, 24px) "Barlow Semi Condensed", sans-serif; text-transform: uppercase; }
+  .cell.L.sh { background: var(--shade); }
+  .cell.L .n { position: absolute; right: 1px; bottom: 0; font-size: clamp(6px, 1.6vw, 10px); font-weight: 600; line-height: 1; }
+  .cell.L.word { background: var(--hl2); }
+  .cell.L.cur { background: var(--hl); }
+  .ar { position: absolute; width: 9px; height: 9px; z-index: 2; pointer-events: none; }
+  .ar path { fill: none; stroke: var(--ink); stroke-width: 1.3; }
+  .ar .tip { fill: var(--ink); stroke: none; }
+
+  .bar { position: sticky; top: 0; z-index: 5; background: var(--ink); color: var(--paper); font-weight: 600; font-size: 1.05rem; padding: 9px 12px; min-height: 2.6em; margin-bottom: 8px; }
+  .bar small { font-weight: 500; opacity: .7; margin-right: .5em; letter-spacing: .06em; }
+  .tools { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+  .tools button, .tools a { min-height: 44px; padding: 0 14px; display: inline-flex; align-items: center; border: 1.5px solid var(--ink); background: transparent; color: var(--ink); font: 600 .95rem "Barlow Condensed", sans-serif; letter-spacing: .06em; text-transform: uppercase; text-decoration: none; cursor: pointer; border-radius: 0; }
+  #out { font-weight: 600; font-size: 1.05rem; align-self: center; }
+  .solution { display: flex; gap: 3px; flex-wrap: wrap; margin: 18px 0 0; align-items: center; }
+  .solution span { width: 26px; height: 30px; border: 1px solid var(--ink); background: var(--shade); display: flex; align-items: flex-end; justify-content: flex-end; font-size: 10px; font-weight: 600; padding: 1px 2px; }
+  .solution .gap { border: 0; background: none; width: 10px; }
+  .note { font-size: .95rem; margin: 6px 0 0; }
+  #kbd { position: fixed; left: -9999px; top: 0; opacity: 0; width: 1px; height: 1px; }
+  @media print {
+    @page { size: A4; margin: 14mm; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    html, body { background: #fff; }
+    .cell { background: #fff; } .cell.C { background: #efeeea; }
+    .bar, .tools, form.answer, footer, .note { display: none !important; }
+    main { max-width: none; padding: 0; }
+    .cell.C .q { font-size: 6.6pt; }
+    .cell.L .ch { display: none; }
+    .cell.L.word, .cell.L.cur { background: #fff; }
+    .cell.L.sh { background: #a9a9a9; }
+  }
+</style>
+</head>
+<body data-stage="7">
+<main>
+  <header>
+    <div class="mast"><h1>Skandinavka</h1><div class="no">br. 30<br>FL300</div></div>
+    <div class="sub"><span>Rešenje: osenčena polja od 1 do 12</span><span>Š = S, Č = C</span></div>
+  </header>
+  <div class="bar" id="bar" aria-live="polite"><small>Dodirnite polje</small></div>
+  <div class="wrap" id="wrap"><div class="grid" id="grid" role="grid" aria-label="Skandinavka"></div></div>
+  <input id="kbd" autocapitalize="characters" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Unos slova">
+  <div class="solution" id="sol" aria-hidden="true"></div>
+  <div class="tools">
+    <button id="zoom" type="button">Uvećaj</button>
+    <button id="chk" type="button">Proveri</button>
+    <a href="skandinavka.pdf" download>PDF za štampu</a>
+    <span id="out" role="status"></span>
+  </div>
+  <p class="note">Dodirnite polje i kucajte. Ponovni dodir menja smer.</p>
+
+  <form class="answer" autocomplete="off">
+    <label for="ans">Rešenje</label>
+    <div class="row"><input id="ans" autocapitalize="characters" spellcheck="false"><button type="submit">Pošalji</button></div>
+    <output class="verdict" aria-live="polite"></output>
+  </form>
+  <footer data-frag="vi"></footer>
+</main>
+<script type="application/json" id="puzzle">{"w":13,"h":11,"cells":[{"t":"C","r":0,"c":0},{"t":"L","r":0,"c":1},{"t":"C","r":0,"c":2},{"t":"L","r":0,"c":3},{"t":"C","r":0,"c":4},{"t":"L","r":0,"c":5},{"t":"C","r":0,"c":6},{"t":"L","r":0,"c":7},{"t":"C","r":0,"c":8},{"t":"L","r":0,"c":9},{"t":"C","r":0,"c":10},{"t":"L","r":0,"c":11},{"t":"C","r":0,"c":12},{"t":"L","r":1,"c":0},{"t":"L","r":1,"c":1},{"t":"L","r":1,"c":2},{"t":"L","r":1,"c":3},{"t":"C","r":1,"c":4},{"t":"L","r":1,"c":5},{"t":"L","r":1,"c":6},{"t":"L","r":1,"c":7},{"t":"C","r":1,"c":8},{"t":"L","r":1,"c":9},{"t":"L","r":1,"c":10},{"t":"L","r":1,"c":11},{"t":"L","r":1,"c":12},{"t":"C","r":2,"c":0},{"t":"L","r":2,"c":1},{"t":"L","r":2,"c":2},{"t":"L","r":2,"c":3},{"t":"L","r":2,"c":4},{"t":"L","r":2,"c":5},{"t":"L","r":2,"c":6},{"t":"C","r":2,"c":7},{"t":"L","r":2,"c":8},{"t":"L","r":2,"c":9},{"t":"L","r":2,"c":10},{"t":"L","r":2,"c":11},{"t":"L","r":2,"c":12},{"t":"L","r":3,"c":0},{"t":"L","r":3,"c":1},{"t":"L","r":3,"c":2},{"t":"C","r":3,"c":3},{"t":"L","r":3,"c":4},{"t":"L","r":3,"c":5},{"t":"L","r":3,"c":6},{"t":"L","r":3,"c":7},{"t":"L","r":3,"c":8},{"t":"C","r":3,"c":9},{"t":"L","r":3,"c":10},{"t":"L","r":3,"c":11},{"t":"L","r":3,"c":12},{"t":"C","r":4,"c":0},{"t":"C","r":4,"c":1},{"t":"L","r":4,"c":2},{"t":"L","r":4,"c":3},{"t":"L","r":4,"c":4},{"t":"C","r":4,"c":5},{"t":"L","r":4,"c":6},{"t":"L","r":4,"c":7},{"t":"L","r":4,"c":8},{"t":"L","r":4,"c":9},{"t":"L","r":4,"c":10},{"t":"C","r":4,"c":11},{"t":"C","r":4,"c":12},{"t":"L","r":5,"c":0},{"t":"L","r":5,"c":1},{"t":"L","r":5,"c":2},{"t":"L","r":5,"c":3},{"t":"C","r":5,"c":4},{"t":"L","r":5,"c":5},{"t":"L","r":5,"c":6},{"t":"L","r":5,"c":7},{"t":"L","r":5,"c":8},{"t":"L","r":5,"c":9},{"t":"C","r":5,"c":10},{"t":"L","r":5,"c":11},{"t":"L","r":5,"c":12},{"t":"C","r":6,"c":0},{"t":"L","r":6,"c":1},{"t":"C","r":6,"c":2},{"t":"L","r":6,"c":3},{"t":"L","r":6,"c":4},{"t":"L","r":6,"c":5},{"t":"L","r":6,"c":6},{"t":"L","r":6,"c":7},{"t":"C","r":6,"c":8},{"t":"L","r":6,"c":9},{"t":"L","r":6,"c":10},{"t":"L","r":6,"c":11},{"t":"L","r":6,"c":12},{"t":"L","r":7,"c":0},{"t":"L","r":7,"c":1},{"t":"L","r":7,"c":2},{"t":"C","r":7,"c":3},{"t":"L","r":7,"c":4},{"t":"L","r":7,"c":5},{"t":"C","r":7,"c":6},{"t":"L","r":7,"c":7},{"t":"L","r":7,"c":8},{"t":"L","r":7,"c":9},{"t":"L","r":7,"c":10},{"t":"L","r":7,"c":11},{"t":"L","r":7,"c":12},{"t":"C","r":8,"c":0},{"t":"L","r":8,"c":1},{"t":"L","r":8,"c":2},{"t":"L","r":8,"c":3},{"t":"L","r":8,"c":4},{"t":"L","r":8,"c":5},{"t":"L","r":8,"c":6},{"t":"C","r":8,"c":7},{"t":"L","r":8,"c":8},{"t":"L","r":8,"c":9},{"t":"L","r":8,"c":10},{"t":"L","r":8,"c":11},{"t":"L","r":8,"c":12},{"t":"L","r":9,"c":0},{"t":"L","r":9,"c":1},{"t":"L","r":9,"c":2},{"t":"L","r":9,"c":3},{"t":"C","r":9,"c":4},{"t":"L","r":9,"c":5},{"t":"L","r":9,"c":6},{"t":"L","r":9,"c":7},{"t":"L","r":9,"c":8},{"t":"C","r":9,"c":9},{"t":"L","r":9,"c":10},{"t":"L","r":9,"c":11},{"t":"L","r":9,"c":12},{"t":"C","r":10,"c":0},{"t":"L","r":10,"c":1},{"t":"L","r":10,"c":2},{"t":"L","r":10,"c":3},{"t":"C","r":10,"c":4},{"t":"L","r":10,"c":5},{"t":"L","r":10,"c":6},{"t":"L","r":10,"c":7},{"t":"C","r":10,"c":8},{"t":"L","r":10,"c":9},{"t":"L","r":10,"c":10},{"t":"L","r":10,"c":11},{"t":"L","r":10,"c":12}],"clues":[{"id":"k1","start":[0,1],"dir":"D","len":4,"from":[0,0],"arrow":"rd","text":"Trup, organizam"},{"id":"k2","start":[0,3],"dir":"D","len":3,"from":[0,2],"arrow":"rd","text":"Zbornik vazduh. informacija (skr.)"},{"id":"k3","start":[0,5],"dir":"D","len":4,"from":[0,4],"arrow":"rd","text":"Glavni grad Ekvadora"},{"id":"k4","start":[0,7],"dir":"D","len":2,"from":[0,6],"arrow":"rd","text":"Najjača karta"},{"id":"k5","start":[0,9],"dir":"D","len":3,"from":[0,8],"arrow":"rd","text":"Spokoj, tišina"},{"id":"k6","start":[0,11],"dir":"D","len":4,"from":[0,10],"arrow":"rd","text":"Pčelica iz crtanog filma"},{"id":"k7","start":[1,0],"dir":"A","len":4,"from":[0,0],"arrow":"dr","text":"Nerešena partija šaha"},{"id":"k8","start":[1,2],"dir":"D","len":5,"from":[0,2],"arrow":"d","text":"… azbuka (tačka-crta)"},{"id":"k9","start":[1,5],"dir":"A","len":3,"from":[1,4],"arrow":"r","text":"Instrumentalno sletanje (skr.)"},{"id":"k10","start":[1,6],"dir":"D","len":6,"from":[0,6],"arrow":"d","text":"Tanka ogrlica"},{"id":"k11","start":[1,9],"dir":"A","len":4,"from":[1,8],"arrow":"r","text":"Država sa Bagdadom"},{"id":"k12","start":[1,10],"dir":"D","len":4,"from":[0,10],"arrow":"d","text":"Ptica koja „donosi bebe“"},{"id":"k13","start":[1,12],"dir":"D","len":3,"from":[0,12],"arrow":"d","text":"Grad filmskog festivala"},{"id":"k14","start":[2,1],"dir":"A","len":6,"from":[2,0],"arrow":"r","text":"Alat za kopanje"},{"id":"k15","start":[2,4],"dir":"D","len":3,"from":[1,4],"arrow":"d","text":"Umetnost (engl.)"},{"id":"k16","start":[2,8],"dir":"A","len":5,"from":[2,7],"arrow":"r","text":"Grad Helene i Parisa"},{"id":"k17","start":[2,8],"dir":"D","len":4,"from":[1,8],"arrow":"d","text":"Planina iznad Drine"},{"id":"k18","start":[3,0],"dir":"A","len":3,"from":[2,0],"arrow":"dr","text":"Radio-far (skr.)"},{"id":"k19","start":[3,4],"dir":"A","len":5,"from":[3,3],"arrow":"r","text":"Grad u Andaluziji"},{"id":"k20","start":[3,7],"dir":"D","len":5,"from":[2,7],"arrow":"d","text":"Službeno pismo"},{"id":"k21","start":[3,10],"dir":"A","len":3,"from":[3,9],"arrow":"r","text":"Suprotno od noći"},{"id":"k22","start":[4,2],"dir":"A","len":3,"from":[4,1],"arrow":"r","text":"Sestrin muž"},{"id":"k23","start":[4,3],"dir":"D","len":3,"from":[3,3],"arrow":"d","text":"Odjek"},{"id":"k24","start":[4,6],"dir":"A","len":5,"from":[4,5],"arrow":"r","text":"Gusta supa"},{"id":"k25","start":[4,9],"dir":"D","len":5,"from":[3,9],"arrow":"d","text":"Otključava se ključem"},{"id":"k26","start":[5,0],"dir":"A","len":4,"from":[4,0],"arrow":"dr","text":"Ha-ha-ha"},{"id":"k27","start":[5,1],"dir":"D","len":6,"from":[4,1],"arrow":"d","text":"Najviši vojni čin"},{"id":"k28","start":[5,5],"dir":"A","len":5,"from":[5,4],"arrow":"r","text":"Ostrvo Afrodite"},{"id":"k29","start":[5,5],"dir":"D","len":6,"from":[4,5],"arrow":"d","text":"Japanska haljina"},{"id":"k30","start":[5,11],"dir":"A","len":2,"from":[5,10],"arrow":"r","text":"Čačak (reg. oznaka)"},{"id":"k31","start":[5,11],"dir":"D","len":6,"from":[4,11],"arrow":"d","text":"Oficir (starinski)"},{"id":"k32","start":[5,12],"dir":"D","len":6,"from":[4,12],"arrow":"d","text":"Grčko-rimsko doba"},{"id":"k33","start":[6,3],"dir":"A","len":5,"from":[6,2],"arrow":"r","text":"Posetiti redom, obilaziti"},{"id":"k34","start":[6,4],"dir":"D","len":3,"from":[5,4],"arrow":"d","text":"Patnja, muka"},{"id":"k35","start":[6,9],"dir":"A","len":4,"from":[6,8],"arrow":"r","text":"Uzvik nestrpljenja"},{"id":"k36","start":[6,10],"dir":"D","len":5,"from":[5,10],"arrow":"d","text":"Veštičje prevozno sredstvo"},{"id":"k37","start":[7,0],"dir":"A","len":3,"from":[6,0],"arrow":"dr","text":"Bašta"},{"id":"k38","start":[7,2],"dir":"D","len":4,"from":[6,2],"arrow":"d","text":"Predmet razgovora"},{"id":"k39","start":[7,4],"dir":"A","len":2,"from":[7,3],"arrow":"r","text":"Jedinica električnog otpora"},{"id":"k40","start":[7,7],"dir":"A","len":6,"from":[7,6],"arrow":"r","text":"Unutrašnji glas morala"},{"id":"k41","start":[7,8],"dir":"D","len":3,"from":[6,8],"arrow":"d","text":"Šareni papagaj"},{"id":"k42","start":[8,1],"dir":"A","len":6,"from":[8,0],"arrow":"r","text":"Holms, Dojlov detektiv"},{"id":"k43","start":[8,3],"dir":"D","len":3,"from":[7,3],"arrow":"d","text":"Zodijački znak"},{"id":"k44","start":[8,6],"dir":"D","len":3,"from":[7,6],"arrow":"d","text":"Šifra"},{"id":"k45","start":[8,8],"dir":"A","len":5,"from":[8,7],"arrow":"r","text":"Koji se tiče rata"},{"id":"k46","start":[9,0],"dir":"A","len":4,"from":[8,0],"arrow":"dr","text":"Andska životinja"},{"id":"k47","start":[9,5],"dir":"A","len":4,"from":[9,4],"arrow":"r","text":"Baka, u primorju"},{"id":"k48","start":[9,7],"dir":"D","len":2,"from":[8,7],"arrow":"d","text":"Simbol natrijuma"},{"id":"k49","start":[9,10],"dir":"A","len":3,"from":[9,9],"arrow":"r","text":"Junak romana"},{"id":"k50","start":[10,1],"dir":"A","len":3,"from":[10,0],"arrow":"r","text":"Za nokte; lagan"},{"id":"k51","start":[10,5],"dir":"A","len":3,"from":[10,4],"arrow":"r","text":"Svečana pesma"},{"id":"k52","start":[10,9],"dir":"A","len":4,"from":[10,8],"arrow":"r","text":"Majka roditelja"}],"shaded":[[5,1],[0,3],[9,0],[2,5],[7,10],[8,1],[1,12],[6,7],[10,3],[3,4],[7,7],[4,4]],"check":"e3b4872903105a7a"}</script>
+<script src="/js/common.js"></script>
+<script>
+const P = JSON.parse(document.getElementById('puzzle').textContent);
+const grid = document.getElementById('grid'), bar = document.getElementById('bar'), kbd = document.getElementById('kbd');
+grid.style.gridTemplateColumns = `repeat(${P.w}, 1fr)`;
+const at = {}, letters = {};
+let saved = {}; try { saved = JSON.parse(localStorage.getItem('fl300.grid') || '{}'); } catch {}
+// which clue sits in which half of its cell
+const TOP = ['r', 'rd', 'ur'];
+const byCell = {};
+P.clues.forEach(cl => (byCell[cl.from.join()] ||= []).push(cl));
+const arrowSVG = a => ({
+  r:  '<path d="M0 4.5H6"/><path class="tip" d="M5 1.5 9 4.5 5 7.5z"/>',
+  d:  '<path d="M4.5 0V6"/><path class="tip" d="M1.5 5 4.5 9 7.5 5z"/>',
+  rd: '<path d="M0 1.5H4.5V6"/><path class="tip" d="M1.5 5 4.5 9 7.5 5z"/>',
+  dr: '<path d="M1.5 0V4.5H6"/><path class="tip" d="M5 1.5 9 4.5 5 7.5z"/>',
+  ld: '<path d="M9 1.5H4.5V6"/><path class="tip" d="M1.5 5 4.5 9 7.5 5z"/>',
+  ur: '<path d="M1.5 9V4.5H6"/><path class="tip" d="M5 1.5 9 4.5 5 7.5z"/>',
+}[a]);
+const arrowPos = (a, half) => ({ // position inside the clue cell, at the edge facing the word
+  r: `right:-5px;top:${half ? 70 : 25}%;margin-top:-4.5px`, d: `bottom:-5px;left:50%;margin-left:-4.5px`,
+  rd: `right:-5px;top:2px`, dr: `bottom:-5px;left:2px`, ld: `left:-5px;top:2px;transform:scaleX(1)`, ur: `top:-5px;left:2px;transform:scaleY(-1)`,
+}[a]);
+for (const cell of P.cells) {
+  const d = document.createElement('div'); d.className = 'cell ' + cell.t; const k = cell.r + ',' + cell.c; at[k] = d;
+  if (cell.t === 'C') {
+    const cs = (byCell[k] || []).sort((a, b) => (TOP.includes(a.arrow) ? 0 : 1) - (TOP.includes(b.arrow) ? 0 : 1));
+    cs.forEach((cl, i) => {
+      const q = document.createElement('div'); q.className = 'q'; q.textContent = cl.text; d.append(q);
+      d.insertAdjacentHTML('beforeend', `<svg class="ar" viewBox="0 0 9 9" style="${arrowPos(cl.arrow, cs.length > 1 && i === 1)}">${arrowSVG(cl.arrow)}</svg>`);
+    });
+  } else {
+    d.innerHTML = '<span class="ch"></span>'; d.setAttribute('role', 'gridcell');
+    letters[k] = saved[k] || ''; d.firstChild.textContent = letters[k];
+    d.addEventListener('pointerdown', e => { e.preventDefault(); select(cell.r, cell.c); });
+  }
+  grid.append(d);
+}
+P.shaded.forEach(([r, c], i) => { const d = at[r + ',' + c]; d.classList.add('sh'); d.insertAdjacentHTML('beforeend', `<span class="n">${i + 1}</span>`); });
+document.getElementById('sol').innerHTML = P.shaded.map((_, i) => (i === 8 ? '<span class="gap"></span>' : '') + `<span>${i + 1}</span>`).join('');
+
+// entries through a cell
+const cellsOf = cl => { const [dr, dc] = cl.dir === 'A' ? [0, 1] : [1, 0]; return [...Array(cl.len)].map((_, i) => [cl.start[0] + dr * i, cl.start[1] + dc * i]); };
+const entry = (r, c, dir) => P.clues.find(cl => cl.dir === dir && cellsOf(cl).some(([a, b]) => a === r && b === c));
+let cur = null, dir = 'A';
+function select(r, c, keepDir) {
+  if (!keepDir && cur && cur[0] === r && cur[1] === c) dir = dir === 'A' ? 'D' : 'A';
+  if (!entry(r, c, dir)) dir = dir === 'A' ? 'D' : 'A';
+  cur = [r, c]; paint(); kbd.focus({ preventScroll: true });
+}
+function paint() {
+  document.querySelectorAll('.cur,.word').forEach(e => e.classList.remove('cur', 'word'));
+  if (!cur) return; const cl = entry(cur[0], cur[1], dir);
+  if (cl) cellsOf(cl).forEach(([r, c]) => at[r + ',' + c].classList.add('word'));
+  at[cur.join()].classList.add('cur');
+  bar.innerHTML = cl ? `<small>${dir === 'A' ? 'Vodoravno' : 'Uspravno'} · ${cl.len}</small>` : ''; if (cl) bar.append(cl.text);
+}
+function put(ch) {
+  const k = cur.join(); letters[k] = ch; at[k].firstChild.textContent = ch;
+  try { localStorage.setItem('fl300.grid', JSON.stringify(letters)); } catch {}
+}
+function step(delta) {
+  const cl = entry(cur[0], cur[1], dir); if (!cl) return; const cs = cellsOf(cl);
+  const i = cs.findIndex(([r, c]) => r === cur[0] && c === cur[1]) + delta;
+  if (i >= 0 && i < cs.length) { cur = cs[i]; paint(); }
+}
+kbd.addEventListener('input', () => {
+  const v = kbd.value.toUpperCase().replace(/[^A-ZČĆŠŽĐ]/g, ''); kbd.value = '';
+  if (!cur || !v) return; put(v.slice(-1)); step(1);
+});
+kbd.addEventListener('keydown', e => {
+  if (!cur) return;
+  if (e.key === 'Backspace') { e.preventDefault(); if (letters[cur.join()]) put(''); else { step(-1); put(''); } }
+  const mv = { ArrowRight: [0, 1, 'A'], ArrowLeft: [0, -1, 'A'], ArrowDown: [1, 0, 'D'], ArrowUp: [-1, 0, 'D'] }[e.key];
+  if (mv) { e.preventDefault(); const r = cur[0] + mv[0], c = cur[1] + mv[1]; dir = mv[2]; if (letters[r + ',' + c] !== undefined) select(r, c, true); else paint(); }
+});
+document.getElementById('zoom').onclick = e => { const z = document.getElementById('wrap').classList.toggle('zoomed'); e.target.textContent = z ? 'Umanji' : 'Uvećaj'; };
+document.getElementById('chk').onclick = async () => {
+  const out = document.getElementById('out'), all = P.cells.filter(c => c.t === 'L').map(c => letters[c.r + ',' + c.c]);
+  if (all.some(v => !v)) { out.textContent = 'Nisu popunjena sva polja.'; return; }
+  out.textContent = await FL.sha16('fl300:grid:' + FL.norm(all.join(''))) === P.check ? 'Tačno.' : 'Netačno.';
+};
+</script>
+</body>
+</html>

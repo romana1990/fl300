@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>FL300 · IV · COLVMNA</title>
+<!-- Photo: "Column of Trajan", albumen print, 19th century. Rijksmuseum, Amsterdam, RP-F-F01143-AI. CC0 / public domain, via Wikimedia Commons. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Libre+Franklin:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/fl300.css">
+<style>
+  :root { --wall: #e9e6df; --ink: #23211d; --paper: #f7f5f0; --stone: #ddd5c4; --minium: #9a2b1d; --answer-font: "Libre Franklin", sans-serif; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--wall); color: var(--ink); }
+  body { font-family: "Libre Franklin", "Helvetica Neue", sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px; }
+  figure { margin: 0 auto 1.6rem; max-width: 380px; }
+  figure img { display: block; width: 100%; height: auto; }
+  .label { max-width: 380px; margin: 0 auto 3rem; font-size: .8rem; line-height: 1.45; border-left: 3px solid var(--ink); padding: .1rem 0 .1rem .8rem; }
+  .label b { font-weight: 600; display: block; font-size: .9rem; }
+  .label span { color: #615d55; }
+
+  .band-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -16px; padding: 0 16px; }
+  .band { display: inline-block; white-space: nowrap; background: var(--stone); border-top: 2px solid #b9ae98; border-bottom: 2px solid #b9ae98; padding: .55rem .8rem .45rem; font-family: "Marcellus", serif; color: var(--minium); font-size: 1.25rem; letter-spacing: .32em; }
+  .hint { font-size: .78rem; color: #615d55; margin: .5rem 0 2.2rem; }
+  .instr { font-family: "Marcellus", serif; font-size: 1.35rem; line-height: 1.35; text-align: center; margin: 0 auto 1.6rem; max-width: 30rem; }
+
+  .ctrl { display: flex; align-items: center; gap: 12px; margin: 0 0 1rem; }
+  .ctrl label { font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; }
+  .ctrl input[type=range] { flex: 1; height: 44px; accent-color: var(--ink); }
+  .ctrl output { font-family: "Marcellus", serif; font-size: 1.6rem; min-width: 2.2ch; text-align: right; }
+  .ctrl button { width: 44px; height: 44px; border: 1.5px solid var(--ink); background: transparent; font-size: 1.3rem; cursor: pointer; border-radius: 0; color: var(--ink); }
+  .cyl { display: flex; justify-content: center; border-top: 2px solid #b9ae98; border-bottom: 2px solid #b9ae98; background: var(--stone); padding: .4rem 0; overflow: hidden; }
+  .col { display: flex; flex-direction: column; align-items: center; font-family: "Marcellus", serif; color: var(--minium); line-height: 1.25; }
+  footer[data-frag] { margin-top: 3rem; }
+</style>
+</head>
+<body data-stage="4">
+<main>
+  <figure><img src="/img/trajan-column.jpg" width="900" height="1241" alt="Albumen photograph of Trajan's Column in Rome, with the church of Santissimo Nome di Maria behind it."></figure>
+  <p class="label"><b>Column of Trajan, Rome</b>Dedicated AD 113. Marble, 30 m without the pedestal; the frieze of the Dacian Wars climbs the shaft in a continuous spiral.<br><span>Albumen print, 19th century. Rijksmuseum, Amsterdam.</span></p>
+
+  <div class="band-wrap"><div class="band" id="band" data-strip="SSEVAMVEIRINOSNMVIDNSAPAIVSITCEMMETVATPQTESERVVLGPSAIAOEOAICNCSPRAOTVTVINSASVLDOVETSVIAIAACSVVPLNLQIGPTTAVNTAIIVEERDTSIRRIDVOSOVBEDPDMAPCIEAAEOLNRCNFTAIIIVNXRSBA"></div></div>
+  <p class="hint">The strip — scroll it sideways.</p>
+
+  <p class="instr">Wrap the strip as many times as the frieze winds around the column.</p>
+
+  <div class="ctrl">
+    <button type="button" id="dn" aria-label="One winding fewer">&minus;</button>
+    <input type="range" id="w" min="2" max="40" value="6" aria-label="Windings">
+    <button type="button" id="up" aria-label="One winding more">+</button>
+    <output id="wv" for="w">6</output>
+  </div>
+  <div class="cyl" id="cyl" aria-live="polite"></div>
+
+  <form class="answer" autocomplete="off">
+    <label for="ans">Clavis</label>
+    <div class="row"><input id="ans" autocapitalize="characters" spellcheck="false"><button type="submit">Enter</button></div>
+    <output class="verdict" aria-live="polite"></output>
+  </form>
+  <footer data-frag="iii"></footer>
+</main>
+<script src="/js/common.js"></script>
+<script>
+const band = document.getElementById('band'), strip = band.dataset.strip, L = strip.length;
+band.textContent = strip;
+const range = document.getElementById('w'), out = document.getElementById('wv'), cyl = document.getElementById('cyl');
+function draw() {
+  const w = +range.value, k = Math.ceil(L / w); out.textContent = w;
+  const from = c => Math.floor(c * L / w); // column c = strip[from(c) .. from(c+1)-1]
+  const avail = cyl.clientWidth || 340, colW = Math.min(36, Math.floor(avail / w));
+  const fs = Math.max(7, Math.min(24, colW * 0.78));
+  cyl.innerHTML = '';
+  for (let c = 0; c < w; c++) {
+    const col = document.createElement('div'); col.className = 'col';
+    // unrolled cylinder: columns darken toward the edges (flat tones, no gradients)
+    const t = Math.cos(((c + 0.5) / w - 0.5) * Math.PI * 0.9);
+    const light = Math.round(78 + 10 * t);
+    col.style.cssText = `width:${colW}px;font-size:${fs}px;background:hsl(40 22% ${light}%)`;
+    col.textContent = '';
+    for (let r = 0; r < k; r++) { const i = from(c) + r; const s = document.createElement('span'); s.textContent = i < from(c + 1) ? strip[i] : ' '; col.append(s); }
+    cyl.append(col);
+  }
+}
+range.addEventListener('input', draw);
+document.getElementById('dn').onclick = () => { range.value = +range.value - 1; draw(); };
+document.getElementById('up').onclick = () => { range.value = +range.value + 1; draw(); };
+addEventListener('resize', draw);
+document.fonts.ready.then(draw); draw();
+</script>
+</body>
+</html>
