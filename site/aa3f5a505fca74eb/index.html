@@ -39,15 +39,19 @@
   .instr { font: 400 clamp(1.7rem, 7vw, 2.2rem) "UnifrakturMaguntia", serif; color: var(--red); margin: 0 0 .3rem; }
   .count { font-variant: small-caps; letter-spacing: .14em; font-size: .85rem; margin: 0 0 1.2rem; color: #6b5d48; }
 
-  /* six places for the fragments */
-  .slots { display: grid; grid-template-columns: repeat(6, 1fr); gap: clamp(5px, 2vw, 12px); max-width: 26rem; margin: 0 auto; }
-  .slots span { display: block; font-size: .95rem; letter-spacing: .08em; color: var(--red); margin-bottom: .3rem; font-variant: small-caps; }
-  .slot { aspect-ratio: 1; border: 1px solid #b7a47c; background: #e6d9bc; box-shadow: inset 0 2px 5px rgba(60, 40, 20, .25); display: grid; place-items: center; }
-  .slot img { width: 74%; height: 74%; object-fit: contain; opacity: 0; transform: scale(1.5); }
-  .slot.got { background: #f4ecda; }
-  .slot.got img { animation: press .5s cubic-bezier(.2, .9, .3, 1.2) forwards; animation-delay: calc(var(--i) * .18s + .3s); }
-  @keyframes press { to { opacity: 1; transform: none; } }
-  .slot:not(.got)::after { content: "·"; color: #b7a47c; font-size: 1.4rem; }
+  /* six cryptex wheels: players set each fragment themselves (glyphs come from the frame's sprite, so no letter names reach the page) */
+  .slots { display: grid; grid-template-columns: repeat(6, 1fr); gap: clamp(4px, 1.6vw, 12px); max-width: 26rem; margin: 0 auto; -webkit-user-select: none; user-select: none; }
+  .slots > div > span { display: block; font-size: .95rem; letter-spacing: .08em; color: var(--red); margin-bottom: .3rem; font-variant: small-caps; }
+  .slots button { all: unset; box-sizing: border-box; display: grid; place-items: center; width: 100%; cursor: pointer; -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; } /* manipulation = no double-tap zoom on quick taps */
+  .slots button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+  .slots .turn { height: 44px; color: #8a7652; font-size: 1.05rem; } /* 44px: Apple's minimum touch target */
+  .slots .turn:active { color: var(--red); background: rgba(142, 27, 23, .08); }
+  .slots .slot { aspect-ratio: 1; border: 1px solid #b7a47c; background: #e6d9bc; box-shadow: inset 0 2px 5px rgba(60, 40, 20, .25); }
+  .slots .slot svg { width: 74%; height: 74%; display: block; transition: opacity .15s; }
+  .slots .slot.set { background: #f4ecda; }
+  @media (max-width: 359px) { .slots { grid-template-columns: repeat(3, 1fr); row-gap: 14px; max-width: 15rem; } } /* very small phones: I–III over IV–VI so the wheels stay thumb-sized */
+  .slots .slot:not(.set)::after { content: "·"; color: #b7a47c; font-size: 1.4rem; }
 
   form.answer { text-align: left; margin-top: 2.2rem; }
   .colophon { text-align: center; color: #6e6254; font-size: .78rem; letter-spacing: .14em; font-variant: small-caps; margin: 18px 0 30px; }
@@ -67,7 +71,7 @@
   <img class="seal" src="/img/templar-seal.png" width="556" height="281" alt="The seal of the Knights Templar: two knights on one horse, and the dome of the Temple.">
   <p class="instr">Fragmenta collige.</p>
   <p class="count" id="count"></p>
-  <div class="slots" id="slots" aria-label="Six places for the fragments, I to VI"></div>
+  <div class="slots" id="slots" role="group" aria-label="Six wheels, one for each fragment, I to VI"></div>
   <form class="answer" autocomplete="off">
     <label for="ans">Verbum</label>
     <div class="row"><input id="ans" autocapitalize="characters" spellcheck="false"><button type="submit">Intra</button></div>
@@ -77,16 +81,29 @@
 <p class="colophon">Anno Domini MMXXVI</p>
 <script src="/js/common.js"></script>
 <script>
-  // fragment → the stage whose page showed it (V comes by Poirot's email, which links to stage 7)
-  const FRAGS = [['i', '2'], ['ii', '3'], ['iii', '4'], ['iv', '5'], ['v', '7'], ['vi', '7']];
-  const seen = FL.seen(), box = document.getElementById('slots'); let n = 0;
-  FRAGS.forEach(([f, st], i) => {
-    const got = seen.has(st), d = document.createElement('div');
-    d.innerHTML = `<span>${f}</span><div class="slot${got ? ' got' : ''}" style="--i:${n}">${got ? `<img src="/g/${f}.png" alt="Fragmentum ${f.toUpperCase()}">` : ''}</div>`;
-    if (got) n++; box.append(d);
+  // Six wheels (tap the slot or ▲/▼). Each turns through the 25 Templar glyphs in the frame's scrambled order (sprite: glyph k sits at x = 25 + 150k
+  // in /img/templar-border-h.svg). Players set them from the fragments they collected; nothing is filled in for them.
+  // The wheels are a workbench only: the answer is still typed below, so the page holds no solution.
+  const N = 25, KEY = 'fl300.wheels', box = document.getElementById('slots'), ROM = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+  let w = [-1, -1, -1, -1, -1, -1];
+  try { const v = JSON.parse(localStorage.getItem(KEY)); if (Array.isArray(v) && v.length === 6) w = v.map(x => Number.isInteger(x) && x >= -1 && x < N ? x : -1); } catch {}
+  const glyph = k => `<svg viewBox="${25 + 150 * k} 0 100 100" aria-hidden="true"><image href="/img/templar-border-h.svg" width="3750" height="100"/></svg>`;
+  const draw = i => {
+    const s = box.querySelectorAll('.slot')[i];
+    s.classList.toggle('set', w[i] >= 0);
+    s.innerHTML = w[i] >= 0 ? glyph(w[i]) : '';
+    s.setAttribute('aria-label', `Fragment ${ROM[i]}: ${w[i] >= 0 ? 'sign ' + (w[i] + 1) + ' of 25' : 'empty'}. Tap to turn.`);
+  };
+  const turn = (i, d) => { w[i] = w[i] < 0 ? (d > 0 ? 0 : N - 1) : (w[i] + d + N) % N; draw(i); try { localStorage.setItem(KEY, JSON.stringify(w)); } catch {} };
+  ROM.forEach((r, i) => {
+    const d = document.createElement('div');
+    d.innerHTML = `<span>${r.toLowerCase()}</span><button class="turn" aria-label="Fragment ${r}: previous sign">▲</button>` +
+      `<button class="slot"></button><button class="turn" aria-label="Fragment ${r}: next sign">▼</button>`;
+    const [up, slot, down] = d.querySelectorAll('button');
+    up.onclick = () => turn(i, -1); slot.onclick = () => turn(i, 1); down.onclick = () => turn(i, 1);
+    box.append(d); draw(i);
   });
-  const ROM = ['nullum', 'I', 'II', 'III', 'IV', 'V', 'VI'];
-  document.getElementById('count').textContent = n === 6 ? 'Omnia collecta.' : `${ROM[n]} ex VI collecta`;
+  document.getElementById('count').textContent = 'Signa in ordine pone';
 </script>
 </body>
 </html>

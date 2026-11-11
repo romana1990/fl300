@@ -67,8 +67,7 @@ PLACE  GRAND CENTRAL
 <p id="wx">METAR LYBE 141900Z 12008KT CAVOK
 06/02 Q1018 NOSIG</p>
 <hr>
-<p><a id="ics" href="#" download="fl300.ics">[ADD TO CALENDAR]</a>
-<a href="https://maps.google.com/?q=Grand+Central+Pizza+Bar+Belgrade" target="_blank" rel="noopener">[MAP]</a></p>
+<p><a href="https://maps.google.com/?q=Grand+Central+Pizza+Bar+Belgrade" target="_blank" rel="noopener">[MAP]</a></p>
 <hr>
 <p>YOU MADE IT ALL THE WAY THROUGH.
 SEE YOU ON THE GROUND.
@@ -86,13 +85,6 @@ SEE YOU ON THE GROUND.
   // printed now, in Zulu, the way the box stamps it: 11NOV26 0912Z
   const now = new Date(), M = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'], z = n => String(n).padStart(2, '0');
   $('stamp').textContent = `${z(now.getUTCDate())}${M[now.getUTCMonth()]}${String(now.getUTCFullYear()).slice(2)} ${z(now.getUTCHours())}${z(now.getUTCMinutes())}Z`;
-
-  // Add to calendar: 20:00 CET = 19:00Z
-  const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//FL300//Invite//EN', 'BEGIN:VEVENT', 'UID:fl300-20261114@fl300.xyz',
-    'DTSTAMP:20261111T000000Z', 'DTSTART:20261114T190000Z', 'DTEND:20261114T230000Z',
-    'SUMMARY:FL300 · Dario 30', 'LOCATION:Grand Central Pizza Bar\\, Belgrade', 'DESCRIPTION:Cleared to land. Wheels down at eight.',
-    'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
-  $('ics').href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics);
 
   // live LYBE METAR via /api/metar (aviationweather.gov); the printed one stays if it fails
   fetch('/api/metar').then(r => r.ok ? r.json() : Promise.reject()).then(m => { if (m.raw) $('wx').textContent = 'METAR ' + m.raw; }).catch(() => {});
