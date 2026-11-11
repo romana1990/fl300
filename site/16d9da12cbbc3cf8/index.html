@@ -32,6 +32,7 @@
   .note canvas { position: absolute; inset: 0; width: 100%; height: 100%; clip-path: inherit; }
   .note .letter, .note canvas { clip-path: polygon(3% 6%, 18% 1%, 40% 4%, 63% 0, 85% 3%, 99% 9%, 96% 30%, 100% 52%, 97% 75%, 99% 96%, 78% 99%, 55% 96%, 33% 100%, 12% 97%, 1% 92%, 4% 70%, 0 45%, 2% 24%); }
   .warm { text-align: center; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #7d7a95; margin: 0; transition: opacity .6s; }
+  .warm.after { text-transform: none; letter-spacing: 0; font: italic 400 15px/1.4 "IM Fell English", Georgia, serif; color: #5b3a1a; margin: 4px auto 0; max-width: 30em; }
 
   /* ---------- the coach ---------- */
   .route { font-size: 12px; letter-spacing: .06em; text-align: center; margin: 0 0 10px; }
@@ -116,11 +117,13 @@
   const note = document.getElementById('note'), cv = document.getElementById('char'), warm = document.getElementById('warm');
   const ctx = cv.getContext('2d'); let W, H, done = false, cleared = 0;
   const KEY = 'fl300.note';
+  // once revealed, the hint becomes Poirot's warning that his reply may land in spam (new domain, Gmail files it there)
+  const after = () => { warm.classList.add('after'); warm.textContent = 'Poirot answers at once. If his letter seems lost, look among the junk mail; the post is not always kind to foreigners.'; };
   let seen = false; try { seen = localStorage.getItem(KEY) === '1'; } catch {}
   function paint() {
     const r = note.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
     W = cv.width = Math.round(r.width * dpr); H = cv.height = Math.round(r.height * dpr);
-    if (seen) { cv.style.display = 'none'; warm.style.opacity = 0; return; }
+    if (seen) { cv.style.display = 'none'; after(); return; }
     const g = ctx.createRadialGradient(W * .5, H * .5, W * .1, W * .5, H * .5, W * .75);
     g.addColorStop(0, '#2a1c12'); g.addColorStop(.7, '#1a120c'); g.addColorStop(1, '#0c0806');
     ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
@@ -140,7 +143,7 @@
     if (++cleared % 25 === 0) { // check how much is left: sample alpha
       const d = ctx.getImageData(0, 0, W, H).data; let opaque = 0, n = 0;
       for (let i = 3; i < d.length; i += 4 * 97) { n++; if (d[i] > 90) opaque++; }
-      if (opaque / n < 0.35) { done = true; cv.style.transition = 'opacity 1.2s'; cv.style.opacity = 0; warm.style.opacity = 0; try { localStorage.setItem(KEY, '1'); } catch {} }
+      if (opaque / n < 0.35) { done = true; cv.style.transition = 'opacity 1.2s'; cv.style.opacity = 0; after(); try { localStorage.setItem(KEY, '1'); } catch {} }
     }
   }
   let down = false;

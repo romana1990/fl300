@@ -10,8 +10,10 @@ const hdr = s => /^[\x20-\x7e]*$/.test(s) ? s : `=?UTF-8?B?${b64(s).replace(/\r\
 
 function buildReply({ to, subject, inReplyTo, reply }) {
   const boundary = 'fl300-' + crypto.randomUUID();
+  const related = 'fl300r-' + crypto.randomUUID();
+  const img = reply.image;
   const subj = /^re:/i.test(subject) ? subject : 'Re: ' + (subject || 'Orient Express');
-  const lines = [
+  const head = [
     `From: "${FROM_NAME}" <${FROM_ADDR}>`,
     `To: <${to}>`,
     `Subject: ${hdr(subj)}`,
@@ -20,6 +22,8 @@ function buildReply({ to, subject, inReplyTo, reply }) {
     ...(inReplyTo ? [`In-Reply-To: ${inReplyTo}`, `References: ${inReplyTo}`] : []),
     'Auto-Submitted: auto-replied',
     'MIME-Version: 1.0',
+  ];
+  const body = [
     `Content-Type: multipart/alternative; boundary="${boundary}"`,
     '',
     `--${boundary}`,
@@ -33,9 +37,25 @@ function buildReply({ to, subject, inReplyTo, reply }) {
     '',
     b64(`<!doctype html><html><body>${reply.html}</body></html>`),
     `--${boundary}--`,
-    '',
   ];
-  return lines.join('\r\n');
+  if (!img) return [...head, ...body, ''].join('\r\n');
+  // multipart/related so the HTML's cid: image ships inside the mail (shown without "load external images", even in Junk)
+  return [
+    ...head,
+    `Content-Type: multipart/related; boundary="${related}"; type="multipart/alternative"`,
+    '',
+    `--${related}`,
+    ...body,
+    `--${related}`,
+    `Content-Type: image/png; name="${img.name}"`,
+    'Content-Transfer-Encoding: base64',
+    `Content-ID: <${img.cid}>`,
+    `Content-Disposition: inline; filename="${img.name}"`,
+    '',
+    img.b64.replace(/.{76}/g, '$&\r\n'),
+    `--${related}--`,
+    '',
+  ].join('\r\n');
 }
 
 export default {

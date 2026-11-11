@@ -3,8 +3,8 @@ main = "src/index.js"
 compatibility_date = "2025-10-01"
 
 [vars]
-FORWARD_TO = "CHANGE-ME@proton.me" # Dario: your Proton address (must be a verified destination in Email Routing)
+FORWARD_TO = "porot.hercul.fl300@proton.me"
 
 [[kv_namespaces]]
 binding = "FL300"
-id = "CHANGE-ME" # the same KV namespace the Pages project uses for the board
+id = "0c1e65c608c14b49841ce5729c7625c8"
