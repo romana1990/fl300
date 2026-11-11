@@ -7,133 +7,189 @@
 <title>FL300 · VI · ORIENT EXPRESS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
 <style>
   :root { --carbon: #262a57; --paper: #f3f0e7; --stamp: #b3261e; --rule: #b9b3a3; }
   * { box-sizing: border-box; }
   html, body { margin: 0; background: #d9d4c7; color: var(--carbon); }
-  body { font-family: "Courier Prime", "Courier New", monospace; font-size: 15px; line-height: 1.5; }
-  .sheet { max-width: 680px; margin: 0 auto; background: var(--paper); padding: 28px 20px 40px; position: relative; overflow: hidden; }
+  body { font-family: "Courier Prime", "Courier New", monospace; font-size: 15px; line-height: 1.45; -webkit-tap-highlight-color: transparent; }
+  .sheet { max-width: 680px; margin: 0 auto; background: var(--paper); padding: 24px 18px 30px; position: relative; overflow: hidden; }
   .sheet + .sheet { margin-top: 10px; }
   .co { text-align: center; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; border-bottom: 1px solid var(--carbon); padding-bottom: 6px; }
   .co b { display: block; font-size: 15px; letter-spacing: .08em; }
-  .meta { display: grid; grid-template-columns: auto 1fr; gap: 0 12px; margin: 14px 0 18px; font-size: 14px; }
-  .meta dt { text-transform: uppercase; } .meta dd { margin: 0; border-bottom: 1px dotted var(--rule); }
-  h2 { font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin: 26px 0 8px; }
-  p { margin: 0 0 10px; }
-  ol.marks { margin: 0; padding-left: 2.4em; }
-  ol.marks li { margin-bottom: 6px; }
-  .pax { border-top: 1px solid var(--rule); padding: 10px 0 6px; }
-  .pax h3 { margin: 0 0 4px; font-size: 15px; font-weight: 700; display: flex; justify-content: space-between; gap: 8px; }
-  .pax h3 span { font-weight: 400; font-size: 13px; white-space: nowrap; }
-  .pax .st { margin: 0 0 4px; }
-  .pax .ob { margin: 0; font-style: italic; }
-  .pax .ob::before { content: "Observed: "; font-style: normal; text-transform: uppercase; font-size: 12px; letter-spacing: .06em; }
+  h2 { font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin: 24px 0 8px; }
+  p { margin: 0 0 8px; }
   .stamp { position: absolute; color: var(--stamp); border: 3px solid var(--stamp); padding: 2px 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; opacity: .82; mix-blend-mode: multiply; pointer-events: none; }
-  .s1 { top: 168px; right: 12px; transform: rotate(-9deg); font-size: 15px; }
-  .s2 { bottom: 24px; right: 22px; transform: rotate(6deg); font-size: 13px; }
-  .last { margin-top: 30px; font-weight: 700; font-size: 16px; border: 1.5px solid var(--carbon); padding: 12px; word-break: break-word; }
-  .last a { color: inherit; }
-  .sig { text-align: right; margin-top: 18px; }
-  .sig i { display: block; font-size: 13px; }
+  .s1 { top: -6px; right: -6px; transform: rotate(8deg); font-size: 12px; z-index: 2; }
+  .intro { margin-top: 14px; }
+
+  /* ---------- the burnt note ---------- */
+  .note { position: relative; width: min(100%, 420px); aspect-ratio: 4 / 3.3; margin: 10px auto 6px; touch-action: none; user-select: none; -webkit-user-select: none; cursor: crosshair; }
+  .note .letter { position: absolute; inset: 0; background: #efe2c2; padding: 7% 8%; font: 400 clamp(15px, 4.4vw, 19px)/1.4 "IM Fell English", Georgia, serif; color: #5b3a1a;
+    clip-path: polygon(3% 6%, 18% 1%, 40% 4%, 63% 0, 85% 3%, 99% 9%, 96% 30%, 100% 52%, 97% 75%, 99% 96%, 78% 99%, 55% 96%, 33% 100%, 12% 97%, 1% 92%, 4% 70%, 0 45%, 2% 24%); }
+  .note .letter i { font-style: italic; }
+  .note .letter b { display: block; margin-top: .5em; font-weight: 400; font-family: "Courier Prime", monospace; font-size: .85em; color: #3d2510; word-break: break-all; }
+  .note canvas { position: absolute; inset: 0; width: 100%; height: 100%; clip-path: inherit; }
+  .note .letter, .note canvas { clip-path: polygon(3% 6%, 18% 1%, 40% 4%, 63% 0, 85% 3%, 99% 9%, 96% 30%, 100% 52%, 97% 75%, 99% 96%, 78% 99%, 55% 96%, 33% 100%, 12% 97%, 1% 92%, 4% 70%, 0 45%, 2% 24%); }
+  .warm { text-align: center; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #7d7a95; margin: 0; transition: opacity .6s; }
+
+  /* ---------- the coach ---------- */
+  .route { font-size: 12px; letter-spacing: .06em; text-align: center; margin: 0 0 10px; }
+  .route b { color: var(--stamp); }
+  .train { display: flex; align-items: stretch; gap: 3px; }
+  .train .end { flex: 0 0 auto; align-self: center; font-size: 9px; line-height: 1.2; letter-spacing: .08em; text-transform: uppercase; color: #7d7a95; text-align: center; }
+  .train .comp { flex: 1; border: 1.5px solid var(--carbon); text-align: center; padding: 8px 0; font-weight: 700; font-size: 17px; background: #faf8f2; }
+  .train .comp small { display: block; font-weight: 400; font-size: 9px; letter-spacing: .1em; }
+  .train .dining { flex: 0 0 auto; border: 1.5px dashed var(--stamp); color: var(--stamp); font-size: 9px; line-height: 1.25; letter-spacing: .06em; text-transform: uppercase; padding: 0 4px; font-weight: 700; display: flex; align-items: center; text-align: center; }
+  .legend { font-size: 12px; margin: 8px 0 0; color: #55587e; }
+
+  /* ---------- the conductor's notes ---------- */
+  .notes { margin: 0; padding-left: 1.9em; }
+  .notes li { margin-bottom: 5px; }
+
+  /* ---------- notebook: integram ---------- */
+  .int-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -10px; padding: 0 10px; }
+  table.int { --cell: clamp(17px, calc((100vw - 112px) / 15), 30px); border-collapse: collapse; margin: 0 auto; font-size: 10px; }
+  table.int th { font-weight: 400; padding: 0; }
+  table.int .grp { font-weight: 700; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; text-align: center; padding-bottom: 2px; }
+  table.int .col { height: 64px; vertical-align: bottom; width: var(--cell); }
+  table.int .col span { writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; display: inline-block; padding-bottom: 3px; }
+  table.int .col.n span { writing-mode: horizontal-tb; transform: none; font-weight: 700; font-size: 12px; }
+  table.int tbody th { text-align: right; padding-right: 4px; white-space: nowrap; }
+  table.int td { padding: 0; border: 1px solid var(--carbon); }
+  table.int td.void { border: 0; }
+  table.int td.l { border-left-width: 2.5px; } table.int tr.t td { border-top-width: 2.5px; }
+  table.int td button { display: block; width: var(--cell); height: calc(var(--cell) + 4px); border: 0; background: transparent; font: 700 calc(var(--cell) * .62) "Courier Prime", monospace; color: var(--carbon); cursor: pointer; padding: 0; }
+  table.int td button.x { color: #a8a5bd; }
+  table.int td button.v { color: var(--paper); background: var(--carbon); }
+  .tools { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; font-size: 12px; color: #55587e; }
+  .tools button { border: 1px solid var(--carbon); background: transparent; color: var(--carbon); font: 400 12px "Courier Prime", monospace; padding: 6px 10px; cursor: pointer; border-radius: 0; flex: none; }
 </style>
 </head>
 <body data-stage="6">
 <div class="sheet">
   <div class="co"><b>Compagnie Internationale des Wagons-Lits</b>Simplon-Orient-Express · Voiture Stamboul–Calais</div>
-  <dl class="meta">
-    <dt>Dossier</dt><dd>No. XXX</dd>
-    <dt>Date</dt><dd>Night of 11 to 12 November</dd>
-    <dt>Place</dt><dd>Snowdrift between Vinkovci and Brod</dd>
-    <dt>Victim</dt><dd>One birthday cake, three tiers</dd>
-    <dt>Investigating</dt><dd>M. Hercule Poirot</dd>
-  </dl>
-  <span class="stamp s1">Confidentiel</span>
+  <p class="intro">Night of 11 to 12 November. At midnight a birthday cake stood in the dining car. By morning: crumbs, and a note in the stove, half burnt.</p>
 
-  <h2>I. The facts</h2>
-  <p>The cake was ordered by telegram for a gentleman's thirtieth birthday, to be delivered at the end of the line.</p>
-  <p>00:40 — The train stops at Vinkovci. 00:58 — The conductor sees a man in the uniform of the Wagons-Lits, whom none of the staff know, step down on to the platform. He does not come back.</p>
-  <p>01:05 — Past Vinkovci the train runs into a snowdrift and stops. It has not moved since.</p>
-  <p>01:15 — The chef sets the cake, whole and untouched, on the last table of the dining car, and goes to bed.</p>
-  <p>06:30 — The steward finds it stabbed twelve times.</p>
-  <p>The snow around the train is smooth and unmarked. Since Vinkovci no one has left the train, and no one has come aboard.</p>
-  <p>Found behind the dining-car curtain: a Wagons-Lits tunic belonging to none of the staff.</p>
-
-  <h2>II. Report of Dr. Konstantin on the cake</h2>
-  <ol class="marks">
-    <li>A deep thrust, straight down through all three tiers to the plate. Great strength.</li>
-    <li>A slanting cut, drawn from left to right: a left hand.</li>
-    <li>A shallow nick. The blade went in, stopped, came out, went in again beside it. Hesitation.</li>
-    <li>A steep thrust into the very top, from high above the table. A person of ordinary height could not have managed the angle without standing on the bench, and the bench is undisturbed.</li>
-    <li>In this cut, traces of strong black coffee.</li>
-    <li>Not a knife: four small holes in a row. The tines of a dessert fork of the Compagnie.</li>
-    <li>A clean cut, its edges stained violet. Ink.</li>
-    <li>Not a stab at all. A bite. A large one.</li>
-    <li>In the wound, a strand of red wool.</li>
-    <li>A cut placed at the exact geometric centre of the bottom tier, to the millimetre.</li>
-    <li>A pinch of red powder in the wound. Paprika.</li>
-    <li>Beside the last mark, carved neatly in the icing: XII.</li>
-  </ol>
-  <p>Twelve marks, no two alike. — K.</p>
+  <div class="note" id="note">
+    <div class="letter">Mon ami,<br>the crumbs lead from the dining car to the compartment <i>beside it</i>, and no further.<br>Who slept there? The conductor's notes will tell you. Write me the name.<b id="addr">— H.P. &nbsp;poirot&#64;fl300.xyz</b></div>
+    <canvas id="char" aria-hidden="true"></canvas>
+    <span class="stamp s1">Confidentiel</span>
+  </div>
+  <p class="warm" id="warm">Warm the paper: hold your finger on it and move slowly</p>
 </div>
 
 <div class="sheet">
-  <h2>III. The passengers</h2>
-  <p>Compartments with a communicating door are marked ⇄.</p>
+  <h2>The coach</h2>
+  <p class="route">Paris · Lausanne · Milan · Venice · Trieste · Zagreb · Vinkovci · Belgrade · Sofia · Istanbul <b>→</b></p>
+  <div class="train" aria-label="Five compartments, numbered 1 to 5; the dining car is coupled next to No. 5">
+    <span class="end">Lug&shy;gage<br>van</span>
+    <span class="comp">1<small>NO.</small></span><span class="comp">2<small>NO.</small></span><span class="comp">3<small>NO.</small></span>
+    <span class="comp">4<small>NO.</small></span><span class="comp">5<small>NO.</small></span>
+    <span class="dining">Dining<br>car</span>
+  </div>
+  <p class="legend">One passenger to a compartment. Each passenger has a different destination and drank something different at dinner: tea, coffee, champagne, rakija or water.</p>
 
-  <div class="pax"><h3>Milos <span>No. 1 ⇄ 2</span></h3>
-    <p class="st">“Ema and I were together all night with the door open between us. Neither of us went out. About one o'clock I heard a man in the corridor. In uniform, I am sure of it.”</p>
-    <p class="ob">Must stoop under every doorway in the carriage. The tallest passenger aboard.</p><!-- DARIO: check -->
-  </div>
-  <div class="pax"><h3>Ema <span>No. 2 ⇄ 1</span></h3>
-    <p class="st">“Milos never left. He was snoring through the door, I can promise you that.”</p>
-    <p class="ob">Signed her statement with her left hand.</p><!-- DARIO: check -->
-  </div>
-  <div class="pax"><h3>Danica <span>No. 3 ⇄ 4</span></h3>
-    <p class="st">“Nikola and I played cards until it was light. Neither of us left the table, and he cheated the whole time.”</p>
-    <p class="ob">Seven cups of black coffee at dinner; asked for an eighth “for later”.</p><!-- DARIO: check -->
-  </div>
-  <div class="pax"><h3>Nikola <span>No. 4 ⇄ 3</span></h3>
-    <p class="st">“I was with Danica all night. Cards. I did not cheat.”</p>
-    <p class="ob">Lifted the conductor's trunk on to the rack with one hand.</p><!-- DARIO: check -->
-  </div>
-  <div class="pax"><h3>Aleksa <span>No. 5 ⇄ 6</span></h3>
-    <p class="st">“Danica and I talked until four. The only thing we heard was that fellow in uniform going past.”</p>
-    <p class="ob">Ate two dinners, then asked whether there would be dessert.</p><!-- DARIO: check -->
-  </div>
-  <div class="pax"><h3>Danica <span>No. 6 ⇄ 5</span></h3>
-    <p class="st">“Aleksa did not leave. I sat knitting by the door; nobody could have gone past me.”</p>
-    <p class="ob">Knitting a long red scarf.</p><!-- DARIO: check -->
-  </div>
-  <div class="pax"><h3>Aleksandra <span>No. 7 ⇄ 8</span></h3>
-    <p class="st">“Ivan and I were reading. Neither of us went anywhere.”</p>
-    <p class="ob">In her handbag, a dessert fork of the Compagnie. “A souvenir,” she says.</p><!-- DARIO: check -->
-  </div>
-  <div class="pax"><h3>Ivan <span>No. 8 ⇄ 7</span></h3>
-    <p class="st">“Aleksandra was with me. We read the timetable and argued about it.”</p>
-    <p class="ob">Carries a slide rule. Corrected the conductor's arithmetic twice.</p><!-- DARIO: check -->
-  </div>
-  <div class="pax"><h3>Nevena <span>No. 9 ⇄ 10</span></h3>
-    <p class="st">“Peđa and I talked through the door until we both fell asleep. He never went out.”</p>
-    <p class="ob">Took eleven minutes at dinner to choose between the fish and the veal, then changed her mind.</p><!-- DARIO: check -->
-  </div>
-  <div class="pax"><h3>Peđa <span>No. 10 ⇄ 9</span></h3>
-    <p class="st">“Nevena never left her compartment. I would have heard the door.”</p>
-    <p class="ob">Writes everything with a leaking fountain pen; violet fingers.</p><!-- DARIO: check -->
-  </div>
-  <div class="pax"><h3>Mikan <span>No. 11 ⇄ 12</span></h3>
-    <p class="st">“Zorana and I sat up all night talking about Belgrade. Nobody left. I did see the man in uniform, though.”</p>
-    <p class="ob">Carries his own tin of paprika and puts it on everything, breakfast included.</p><!-- DARIO: check -->
-  </div>
-  <div class="pax"><h3>Zorana <span>No. 12 ⇄ 11</span></h3>
-    <p class="st">“Mikan was with me the whole time. I will swear to it. In Latin, if you prefer.”</p>
-    <p class="ob">Numbers her pages, her suitcases and her teacups in Roman numerals.</p><!-- DARIO: check -->
-  </div>
+  <h2>The conductor's notes</h2>
+  <ol class="notes">
+    <li>The champagne went to No. 1.</li>
+    <li>Peđa drank rakija.</li>
+    <li>Ivan is going to the end of the line.</li>
+    <li>The passenger for Sofia is in No. 4.</li>
+    <li>Whoever drank rakija gets off at Belgrade.</li>
+    <li>Nevena drank coffee.</li>
+    <li>Ivan is in No. 2.</li>
+    <li>The passenger for Zagreb drank only water.</li>
+    <li>Peđa is in No. 3.</li>
+    <li>Ema is not going to Zagreb.</li>
+  </ol>
+  <p class="legend">— Pierre Michel, conductor</p>
 
-  <p style="margin-top:22px">There are always two solutions. One is for the police.</p>
-  <p class="last">Send your conclusion to Monsieur Poirot: <a href="mailto:poirot@fl300.xyz">poirot@fl300.xyz</a></p>
-  <span class="stamp s2">Vu · H.P.</span>
+  <h2>Notebook</h2>
+  <div class="int-wrap"><table class="int" id="int"></table></div>
+  <div class="tools"><span>Tap: ✗, tap again: ✓, again: clear.</span><button type="button" id="reset">Clear notebook</button></div>
 </div>
 <script src="/js/common.js"></script>
+<script>
+// ---------- the burnt note: char clears where it's warmed ----------
+(() => {
+  const note = document.getElementById('note'), cv = document.getElementById('char'), warm = document.getElementById('warm');
+  const ctx = cv.getContext('2d'); let W, H, done = false, cleared = 0;
+  const KEY = 'fl300.note';
+  let seen = false; try { seen = localStorage.getItem(KEY) === '1'; } catch {}
+  function paint() {
+    const r = note.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+    W = cv.width = Math.round(r.width * dpr); H = cv.height = Math.round(r.height * dpr);
+    if (seen) { cv.style.display = 'none'; warm.style.opacity = 0; return; }
+    const g = ctx.createRadialGradient(W * .5, H * .5, W * .1, W * .5, H * .5, W * .75);
+    g.addColorStop(0, '#2a1c12'); g.addColorStop(.7, '#1a120c'); g.addColorStop(1, '#0c0806');
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    for (let i = 0; i < 2200; i++) { // ash speckle
+      ctx.fillStyle = `rgba(${90 + Math.random() * 60},${70 + Math.random() * 40},${50 + Math.random() * 30},${Math.random() * .25})`;
+      ctx.fillRect(Math.random() * W, Math.random() * H, 1 + Math.random() * 2 * dpr, 1 + Math.random() * 2 * dpr);
+    }
+  }
+  function heat(x, y) {
+    if (done) return;
+    const dpr = W / note.clientWidth, R = 46 * dpr;
+    ctx.globalCompositeOperation = 'destination-out';
+    const g = ctx.createRadialGradient(x * dpr, y * dpr, 0, x * dpr, y * dpr, R);
+    g.addColorStop(0, 'rgba(0,0,0,.22)'); g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x * dpr, y * dpr, R, 0, 7); ctx.fill();
+    ctx.globalCompositeOperation = 'source-over';
+    if (++cleared % 25 === 0) { // check how much is left: sample alpha
+      const d = ctx.getImageData(0, 0, W, H).data; let opaque = 0, n = 0;
+      for (let i = 3; i < d.length; i += 4 * 97) { n++; if (d[i] > 90) opaque++; }
+      if (opaque / n < 0.35) { done = true; cv.style.transition = 'opacity 1.2s'; cv.style.opacity = 0; warm.style.opacity = 0; try { localStorage.setItem(KEY, '1'); } catch {} }
+    }
+  }
+  let down = false;
+  const pos = e => { const r = note.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  note.addEventListener('pointerdown', e => { down = true; note.setPointerCapture(e.pointerId); heat(...pos(e)); });
+  note.addEventListener('pointermove', e => { if (down || e.pointerType === 'mouse') heat(...pos(e)); });
+  note.addEventListener('pointerup', () => down = false); note.addEventListener('pointercancel', () => down = false);
+  paint(); addEventListener('resize', () => { if (!done && !seen) paint(); });
+})();
+
+// ---------- notebook: an integram (every pair of categories), ✗/✓ remembered on this device ----------
+(() => {
+  const CAT = {
+    P: ['Passenger', ['Ema', 'Ivan', 'Nevena', 'Nikola', 'Peđa']],
+    C: ['Compartment', ['1', '2', '3', '4', '5']],
+    D: ['Destination', ['Trieste', 'Zagreb', 'Belgrade', 'Sofia', 'Istanbul']],
+    K: ['Drink', ['Tea', 'Coffee', 'Champagne', 'Rakija', 'Water']],
+  };
+  const COLS = ['C', 'D', 'K'], ROWS = [['P', ['C', 'D', 'K']], ['K', ['C', 'D']], ['D', ['C']]]; // the staircase
+  const KEY = 'fl300.int5', MARK = ['', '✗', '✓'], CLS = ['', 'x', 'v'];
+  let st = {}; try { st = JSON.parse(localStorage.getItem(KEY)) || {}; } catch {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch {} };
+  const t = document.getElementById('int'), cells = {}, id = (a, i, b, j) => `${a}${i}${b}${j}`;
+  let h = '<thead><tr><th></th>' + COLS.map(c => `<th class="grp" colspan="5">${CAT[c][0]}</th>`).join('') + '</tr><tr><th></th>';
+  for (const c of COLS) h += CAT[c][1].map(v => `<th class="col${c === 'C' ? ' n' : ''}"><span>${v}</span></th>`).join('');
+  t.innerHTML = h + '</tr></thead>';
+  const tb = document.createElement('tbody');
+  for (const [r, with_] of ROWS) CAT[r][1].forEach((rv, i) => {
+    const tr = document.createElement('tr'); if (i === 0) tr.className = 't';
+    tr.innerHTML = `<th>${rv}</th>`;
+    for (const c of COLS) CAT[c][1].forEach((cv, j) => {
+      const td = document.createElement('td'); if (j === 0) td.classList.add('l');
+      if (!with_.includes(c)) { td.className = 'void'; tr.append(td); return; }
+      const k = id(r, i, c, j), b = document.createElement('button');
+      b.type = 'button'; b.setAttribute('aria-label', `${rv} – ${cv}`);
+      b.addEventListener('click', () => {
+        st[k] = ((st[k] || 0) + 1) % 3;
+        if (st[k] === 2) for (let n = 0; n < 5; n++) for (const o of [id(r, i, c, n), id(r, n, c, j)]) if (o !== k && !st[o]) st[o] = 1; // ✓ crosses its row and column
+        save(); draw();
+      });
+      cells[k] = b; td.append(b); tr.append(td);
+    });
+    tb.append(tr);
+  });
+  t.append(tb);
+  const draw = () => { for (const k in cells) { const v = st[k] || 0; cells[k].textContent = MARK[v]; cells[k].className = CLS[v]; } };
+  document.getElementById('reset').addEventListener('click', () => { st = {}; save(); draw(); });
+  draw();
+})();
+</script>
 </body>
 </html>

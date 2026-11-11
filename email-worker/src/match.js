@@ -1,7 +1,8 @@
 // Classify an email to Poirot. Pure function: imported by the Worker and by tools/fl300.mjs verify.
-const CORRECT = ['svi', 'sve', 'svako', 'svaki', 'svih', 'dvanaest', 'zajedno', 'everyone', 'everybody', 'all', 'twelve', '12', 'tous', 'toutes', 'ensemble'];
-const STRANGER = ['stranger', 'stranac', 'stranca', 'nepoznat', 'nepoznati', 'uniform', 'uniforma', 'kondukter', 'conductor'];
-const NAMES = ['milos', 'ema', 'danica', 'nikola', 'aleksa', 'aleksandra', 'ivan', 'nevena', 'pedja', 'peda', 'mikan', 'zorana'];
+// The culprit, in any Serbian case (Nikola, Nikole, Nikoli, Nikolu, Nikolom). Any other guest's name alone is a wrong guess.
+const CULPRIT = 'nikol(a|e|i|u|om)';
+const NAMES = ['milos', 'milosa', 'ema', 'emu', 'ivan', 'ivana', 'nevena', 'nevenu', 'pedja', 'peda', 'pedju', 'pedu', 'danica', 'danicu', 'aleksa', 'aleksu',
+  'aleksandra', 'aleksandru', 'mikan', 'mikana', 'zorana', 'zoranu'];
 
 const fold = s => s.replace(/[đĐ]/g, 'd').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
@@ -22,13 +23,9 @@ export function ownText(text) {
 }
 
 export function classify(text) {
-  const t = fold(ownText(text))
-    .replace(/\b\d{1,2}:\d{2}\b/g, ' ')             // times like 12:05 are not "12"
-    .replace(/\b\d{1,2}\.\s?\d{1,2}\.(\s?\d{2,4}\.?)?/g, ' '); // nor dates like 12.11.
-  const has = w => new RegExp(`(^|[^a-z0-9])${w}($|[^a-z0-9])`).test(t);
-  if (CORRECT.some(has)) return 'correct';
-  if (STRANGER.some(has)) return 'stranger';
-  const names = new Set(NAMES.filter(has).map(n => n === 'peda' ? 'pedja' : n));
-  if (names.size === 1) return 'wrong';
+  const t = fold(ownText(text));
+  const has = w => new RegExp(`(^|[^a-z0-9])(${w})($|[^a-z0-9])`).test(t);
+  if (has(CULPRIT)) return 'correct';
+  if (NAMES.some(has)) return 'wrong';
   return 'none';
 }

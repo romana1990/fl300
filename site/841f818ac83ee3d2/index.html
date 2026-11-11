@@ -23,14 +23,33 @@
   .top b { color: var(--red); font-weight: 600; }
   h1 { font-weight: 600; font-size: clamp(2.6rem, 14vw, 4.4rem); line-height: .9; letter-spacing: .02em; text-transform: uppercase; margin: 1rem 0 .3rem; }
   .instr { font-size: 1.25rem; letter-spacing: .06em; margin: 0 0 1.4rem; text-transform: uppercase; color: var(--red); }
-  ol { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
-  li { display: grid; grid-template-columns: 2.2rem 1fr auto; align-items: end; gap: .6rem; padding: .7rem 0 .55rem; border-bottom: 1px solid var(--ink); }
-  li .n { font-size: 1.7rem; font-weight: 600; line-height: 1; }
-  li .blanks { display: flex; gap: 5px; flex-wrap: wrap; padding-bottom: 4px; }
-  li .blanks i { width: clamp(14px, 4.6vw, 22px); border-bottom: 2px solid var(--ink); height: 1.2rem; }
-  li .num { font-size: 1.35rem; letter-spacing: .04em; color: var(--red); min-width: 2.4rem; text-align: right; }
-  .small { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; margin: 1.1rem 0 0; display: flex; justify-content: space-between; }
-  .card form.answer { margin-top: 2rem; }
+  .card { padding-bottom: 1.2rem; }
+  .small { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; margin: 1.1rem 0 0; display: flex; justify-content: space-between; gap: 1rem; }
+  .card .instr { margin-bottom: 0; }
+
+  /* ---------- film strip: tap a frame to replay that reel ---------- */
+  .reels { max-width: 560px; margin: 0 auto; padding: 1.6rem 16px 0; }
+  .reels h2 { font-weight: 400; font-size: .72rem; letter-spacing: .3em; text-transform: uppercase; color: #cfc8b8; margin: 0 0 .6rem; display: flex; justify-content: space-between; }
+  .film { background: #0b0a0a; padding: 20px 8px; position: relative; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .film::before, .film::after { content: ""; position: absolute; left: 6px; right: 6px; height: 8px;
+    background: repeating-linear-gradient(90deg, #2c2826 0 9px, transparent 9px 18px); border-radius: 1px; }
+  .film::before { top: 6px; } .film::after { bottom: 6px; }
+  .frame { position: relative; padding: 0; border: 0; background: #000; cursor: pointer; aspect-ratio: 3 / 2; overflow: hidden; outline: 2px solid transparent; outline-offset: 0; transition: outline-color .2s; }
+  .frame img { display: block; width: 100%; height: 100%; object-fit: cover; filter: sepia(.35) brightness(.8); transition: filter .25s; }
+  .frame span { position: absolute; left: 0; bottom: 0; background: #0b0a0a; color: var(--paper); font: 600 .9rem "Oswald", sans-serif; padding: 1px 7px; }
+  .frame:hover img, .frame:focus-visible img, .frame.on img { filter: none; }
+  .frame.on { outline-color: var(--red); } .frame.on span { background: var(--red); }
+  .frame:focus-visible { outline-color: var(--paper); }
+
+  /* ---------- the poster ---------- */
+  .poster { max-width: 560px; margin: 1.2rem auto 0; padding: 0 16px; }
+  .poster > div { border: 2px solid var(--paper); outline: 6px solid #151414; box-shadow: 0 0 0 8px var(--paper); color: var(--paper); text-align: center; padding: 1.6rem 1.1rem 1.4rem; margin: 8px; }
+  .soon { font-size: .8rem; letter-spacing: .5em; text-transform: uppercase; color: var(--red); margin: 0; }
+  .billing { margin: 1.1rem 0 .4rem; font-size: clamp(1.3rem, 6vw, 1.7rem); font-weight: 600; letter-spacing: .05em; color: #5b5450; }
+  .billing span { display: inline-block; } .billing span:not(:last-child)::after { content: "·"; color: var(--red); margin: 0 .35em 0 .45em; }
+  .tagline { font-size: clamp(1.15rem, 5.6vw, 1.5rem); letter-spacing: .06em; text-transform: uppercase; margin: 1rem 0 0; }
+  .tagline b { color: var(--red); font-weight: 600; }
+  .poster form.answer { --ink: #f1ebdc; --paper: #151414; margin-top: 1.4rem; text-align: left; }
   footer[data-frag] .frag { color: #cfc8b8; } footer[data-frag] .frag img { filter: invert(.85); }
 </style>
 </head>
@@ -42,28 +61,42 @@
 <main class="card">
   <div class="top"><span>Programme</span><b>One night only</b></div>
   <h1>Six reels</h1>
-  <p class="instr">Listen. Recognise. Identify.</p>
-  <ol>
-    <li><span class="n">1</span><span class="blanks"><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="num">II</span></li>
-    <li><span class="n">2</span><span class="blanks"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="num">III</span></li>
-    <li><span class="n">3</span><span class="blanks"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="num">V</span></li>
-    <li><span class="n">4</span><span class="blanks"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="num">III</span></li>
-    <li><span class="n">5</span><span class="blanks"><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="num">VI</span></li>
-    <li><span class="n">6</span><span class="blanks"><i></i><i></i><i></i><i></i></span><span class="num">I</span></li>
-  </ol>
+  <p class="instr">Watch. Recognise. Identify.</p>
   <p class="small"><span>Doors 20:00</span><span>No admission after the lights go down</span></p>
+</main>
+<section class="reels" aria-label="The six reels">
+  <h2><span>The reels</span><span>Tap to replay</span></h2>
+  <div class="film"><button class="frame" type="button" data-i="0" aria-label="Replay reel 1"><img src="/v/t1.jpg" alt="" width="360" height="240" loading="lazy"><span>1</span></button><button class="frame" type="button" data-i="1" aria-label="Replay reel 2"><img src="/v/t2.jpg" alt="" width="360" height="240" loading="lazy"><span>2</span></button><button class="frame" type="button" data-i="2" aria-label="Replay reel 3"><img src="/v/t3.jpg" alt="" width="360" height="240" loading="lazy"><span>3</span></button><button class="frame" type="button" data-i="3" aria-label="Replay reel 4"><img src="/v/t4.jpg" alt="" width="360" height="240" loading="lazy"><span>4</span></button><button class="frame" type="button" data-i="4" aria-label="Replay reel 5"><img src="/v/t5.jpg" alt="" width="360" height="240" loading="lazy"><span>5</span></button><button class="frame" type="button" data-i="5" aria-label="Replay reel 6"><img src="/v/t6.jpg" alt="" width="360" height="240" loading="lazy"><span>6</span></button></div>
+</section>
+<section class="poster"><div>
+  <p class="soon">Coming soon</p>
+  <p class="billing" aria-label="Six stars, unnamed"><span>?</span><span>?</span><span>?</span><span>?</span><span>?</span><span>?</span></p>
+  <p class="tagline">Six stars. One train. <b>Name it.</b></p>
   <form class="answer" autocomplete="off">
-    <label for="ans">Destination</label>
+    <label for="ans">The train</label>
     <div class="row"><input id="ans" autocapitalize="characters" spellcheck="false"><button type="submit">Enter</button></div>
     <output class="verdict" aria-live="polite"></output>
   </form>
-</main>
+</div></section>
 <footer data-frag="iv"></footer>
 <script src="/js/common.js"></script>
 <script>
   const v = document.getElementById('reel');
   const miss = () => document.getElementById('screen').classList.add('err');
   v.addEventListener('error', miss); if (v.error) miss();
+
+  // where each reel starts in /v/reel.mp4 (seconds); reel 6 ends at the end
+  const START = [0, 16.5, 34.8, 52.5, 67.3, 98.5];
+  const frames = [...document.querySelectorAll('.frame')];
+  frames.forEach((f, i) => f.addEventListener('click', () => {
+    v.currentTime = START[i]; v.play().catch(() => {});
+    document.getElementById('screen').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }));
+  v.addEventListener('timeupdate', () => {
+    let cur = -1; if (!v.paused || v.currentTime > 0) START.forEach((t, i) => { if (v.currentTime >= t) cur = i; });
+    frames.forEach((f, i) => f.classList.toggle('on', i === cur));
+  });
+
 </script>
 </body>
 </html>

@@ -17,6 +17,15 @@ const FL = {
   freq(f, nav) { return Number(f).toFixed(nav ? 2 : 3); },
   async audio(canon) { return '/a/' + await FL.sha16('fl300:a:' + canon) + '.mp3'; },
 
+  // stages this device has opened (for "Fragmenta collige" on stage 8)
+  seen(stage) {
+    try {
+      const s = new Set(JSON.parse(localStorage.getItem('fl300.seen') || '[]'));
+      if (stage) { s.add(String(stage)); localStorage.setItem('fl300.seen', JSON.stringify([...s])); }
+      return s;
+    } catch { return new Set(); }
+  },
+
   callsign(v) {
     try {
       if (v !== undefined) localStorage.setItem('fl300.callsign', v);
@@ -67,7 +76,7 @@ const FL = {
 if (typeof document !== 'undefined') {
   document.addEventListener('DOMContentLoaded', () => {
     const stage = document.body.dataset.stage;
-    if (stage) FL.ping(stage);
+    if (stage) { FL.ping(stage); FL.seen(stage); }
     document.querySelectorAll('form.answer:not(.callsign)').forEach(FL.wire);
     document.querySelectorAll('footer[data-frag]').forEach(FL.footer);
   });

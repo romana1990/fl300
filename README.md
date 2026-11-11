@@ -14,7 +14,7 @@ site/                 ← Pages build output directory (the only thing served)
   a/                  cockpit audio (Dario's mp3s, hashed names, see below)
   v/reel.mp4          cinema reel (Dario)
   chart/              LYBE ILS 12L: PDF + rendered page 1
-functions/api/        ping.js, board.js (Pages Functions, KV binding FL300)
+functions/api/        ping.js, board.js (Pages Functions, KV binding FL300), metar.js (live LYBE METAR proxy, no binding)
 email-worker/         Poirot (its own wrangler.toml; only npm dep: postal-mime)
 tools/fl300.mjs       hash | rot4 | audio | glyphs | verify
 tools/skandinavka.json  crossword solution (never deployed)
@@ -32,6 +32,7 @@ content/pastelink.txt   paste this into the pastelink bin
 | 3 | CORVINVS | **DRAKUL** | `/33f115cf73b329ab/` | Fragmentum II (E) |
 | 4 | COLVMNA | **TRAIANUS** | `/865b5cef27b1243a/` | Fragmentum III (L) |
 | 5 | CINEMA | **DACIA** | `/841f818ac83ee3d2/` | Fragmentum IV (I) |
+| 5→6 aliases | — | ORIENT EXPRESS · THE ORIENT EXPRESS · MURDER ON THE ORIENT EXPRESS | `/e0a3672389f0e4eb/` · `/75e2bc7a03fdc335/` · `/0441a86d623d5ebf/` (redirect to stage 6) | — |
 | 6 | ORIENT EXPRESS | **ORIENT** | `/16d9da12cbbc3cf8/` | (V is in Poirot's email) |
 | 7 | CRVCIVERBVM | Poirot's email (random folder) | `/c7e04b9a1f5d2e83/` | Fragmentum VI (A) |
 | 8 | MELITA | **MALTEŠKI KRST** | `/aa3f5a505fca74eb/` | — |
@@ -67,7 +68,7 @@ Drop the four mp3s into `site/a/` under these names (`node tools/fl300.mjs audio
 | 118.100 | Beograd Tower | `site/a/30d782d8129d0c49.mp3` |
 | 121.500 | numbers station | `site/a/845ae3004954db51.mp3` |
 
-The page loops whichever active frequency you swapped in last ("RX" next to it). No file → soft static. NAV idents BGD 112.05 / YUB 110.30 / VAL 116.60 are generated live (1020 Hz, 10 wpm, every 8 s). PWR unlocks audio and sets `navigator.audioSession.type = 'playback'` where Safari supports it, so the iPhone silent switch shouldn't mute it. **Test on your iPhone with the switch both ways.** Starting frequencies are harmless (121.900 / 122.150, 127.125 / 134.350, 109.10 / 114.30, 112.60 / 111.10).
+One COM and one NAV radio, each with an audio switch (COM on, NAV off at power-up). You hear the active frequency ("RX"/"ID" next to it); the knob tunes the standby. Transponder shows 3301. A COM file loops; no file → soft static. NAV idents BGD 112.05 / YUB 110.30 / VAL 116.60 play `site/a/40cc6b96ed663ba3.mp3` / `f91e4cd2f571f483.mp3` / `fdd4598154d9f5be.mp3` if present (looped as-is, so put the gap in the file); otherwise they're generated live (1020 Hz, 10 wpm, every 8 s). PWR unlocks audio and sets `navigator.audioSession.type = 'playback'` where Safari supports it, so the iPhone silent switch shouldn't mute it. **Test on your iPhone with the switch both ways.** Starting frequencies are harmless (COM 121.900 / 122.150, NAV 109.10 / 114.30).
 
 Numbers-station decode (from the chart): 15.7 BGD·1 **D**EVDA · 12.9 BGD·3 OB**R** · 11.7 BGD·2 L**A**BUD · R321 BGD·3 TI**K**VU · 11.7 BGD·4 LAB**U**D · 28.0 VAL·1 **L**OGAR → DRAKUL.
 
@@ -80,28 +81,31 @@ Paragraphs count from the first paragraph under the date heading. 5 May appears 
 
 Plaintext (161 = 7 × 23 letters): SENATVS POPVLVSQVE ROMANVS IMP CAESARI DIVI NERVAE F NERVAE TRAIANO AVG ~~GERM DACICO PONTIF MAXIMO~~ TRIB POT XVII IMP VI COS VI P P AD DECLARANDVM QVANTAE ALTITVDINIS MONS ET LOCVS TANTIS OPERIBVS SIT EGESTVS **CLAVIS DACIA**. One block of titulature is trimmed to hit 23 × 7 exactly; nothing is padded. At *w* windings, column *c* holds strip letters ⌊c·L/w⌋ … ⌊(c+1)·L/w⌋−1, so every value except 23 misaligns (verified for 2–40).
 
-## Stage 6 · Orient Express — solution walkthrough
+**Cryptex.** The answer box is a five-ring cryptex. Each ring's brass plate gives *line · letter* in the strip wound at 23: II·XII **D** (DIVI) · I·IV **A** (SENATVS) · IV·IX **C** (VICOS) · III·IX **I** (TRAIANO) · V·I **A** (DECLAR**A**NDVM). The verse (original, Langdon-style): *Where Peter stands, an emperor once stood* (St Peter replaced Trajan's statue on top in 1587) / *his war is wound in marble, turn on turn* / *Unwind the stone as only Romans could,* / *then line and letter, ring by ring, discern.* CLAVIS DACIA stays at the end as a shortcut for sharp eyes. Red herring: **APPLE** jams the rings with "Wrong orb, Professor Langdon. This is not London." Rings: drag, tap top/bottom half, wheel, or focus and type letters; **Aperi** opens. `verify` checks the plates spell DACIA.
 
-Facts: the stranger stepped down at Vinkovci at **00:58**; the cake was set down whole at **01:15**; the snow is untouched, so nobody left or came aboard after Vinkovci → the stranger cannot have done it. Each of Dr. Konstantin's twelve marks matches exactly one passenger's *Observed* line:
+## Stage 5 · Cinema — six stars, one train
 
-| Mark | Clue | Passenger |
-|---|---|---|
-| 1 | great strength | Nikola (lifted the trunk one-handed) |
-| 2 | left hand | Ema |
-| 3 | hesitation | Nevena (eleven minutes to choose dinner) |
-| 4 | from high above | Milos (tallest) |
-| 5 | black coffee | Danica, No. 3 |
-| 6 | dessert fork | Aleksandra |
-| 7 | violet ink | Peđa |
-| 8 | a bite | Aleksa (two dinners) |
-| 9 | red wool | Danica, No. 6 (red scarf) |
-| 10 | exact geometric centre | Ivan (slide rule) |
-| 11 | paprika | Mikan |
-| 12 | XII carved | Zorana (Roman numerals) |
+Each clip's film shares one actor with *Murder on the Orient Express* (2017): Chamber of Secrets → **Kenneth Branagh** (Poirot) · Pirates → **Johnny Depp** (Ratchett) · The Force Awakens → **Daisy Ridley** (Mary Debenham) · Frozen → **Josh Gad** (MacQueen) · Skyfall → **Judi Dench** (Princess Dragomiroff) · Spider-Man → **Willem Dafoe** (Hardman). The one picture all six share is the train → **ORIENT**. The answer box accepts ORIENT, ORIENT EXPRESS, THE ORIENT EXPRESS and MURDER ON THE ORIENT EXPRESS (three alias folders redirect to stage 6).
 
-Twelve marks, twelve different people, and every alibi pair vouches for each other: all twelve lied, so all twelve did it. `verify` enumerates every assignment and proves this is the only consistent solution.
+## Stage 6 · Orient Express — the burnt note and the conductor's notes
 
-**Dario: every "Observed" trait is marked `<!-- DARIO: check -->`.** Swap in real, harmless details about each friend; if you change one, keep it unique to that person and update the matching mark (and `ORIENT.traits` / `marks` in `tools/fl300.mjs` if the trait's *kind* changes). The two Danicas are told apart by compartment number; add surnames or nicknames if you prefer.
+**Mechanics.** A charred note from the dining-car stove: players warm it with a finger (or mouse) and the char clears, revealing Poirot: *the crumbs lead from the dining car to the compartment beside it; who slept there? Write me the name. — poirot@fl300.xyz*. Revealed once, it stays revealed on that device. Below: the route, a coach of five compartments (No. 5 is coupled to the dining car), the conductor's 10 notes, and an **integram** notebook in the magazine staircase layout (Passenger × Compartment/Destination/Drink, Drink × Compartment/Destination, Destination × Compartment); tap ✗ / ✓, a ✓ crosses out its row and column. No answer box: the answer is emailed.
+
+**Solution** (every note is needed; `verify` proves the solution is unique):
+
+| No. | Passenger | Destination | Drink |
+|---|---|---|---|
+| 1 | Ema | Trieste | champagne |
+| 2 | Ivan | Istanbul | tea |
+| 3 | Peđa | Belgrade | rakija |
+| 4 | Nevena | Sofia | coffee |
+| 5 | **Nikola** | Zagreb | water |
+
+Walkthrough: Peđa is No. 3 (9), rakija (2) → Belgrade (5). Ivan is No. 2 (7) → Istanbul (3). Ivan can't have water (water → Zagreb, 8) or champagne (champagne → No. 1, 1), so tea. Nevena has coffee (6): not No. 1 (champagne), not Zagreb (water), so she's the Sofia passenger in No. 4 (4). Ema and Nikola share No. 1/No. 5, Trieste/Zagreb, champagne/water; Ema isn't going to Zagreb (10) → Ema No. 1, Trieste, champagne; **Nikola No. 5, Zagreb, water**.
+
+**Poirot's email:** `Nikola` in any Serbian case → Correct reply (next link + Fragmentum V); another guest's name → Wrong reply; anything else → forwarded only, highlighted on the board for you to answer.
+
+**If you change a note,** change the matching clue in `ORIENT.clues` (`tools/fl300.mjs`) and run `verify`: it checks the solution is still unique, that Nikola is still in No. 5, and that no note is redundant.
 
 ## Stage 7 · Skandinavka — solution (keep private)
 
@@ -142,7 +146,7 @@ Shaded 1–12: M(r6c2) A(r1c4) L(r10c1) T(r3c6) E(r8c11) Š(r9c2) K(r2c13) I(r7c
 | ART | ↓ r3 c5 | Umetnost (engl.) |
 | TROJA | → r3 c9 | Grad Helene i Parisa |
 | TARA | ↓ r3 c9 | Planina iznad Drine |
-| VOR | → r4 c1 | Radio-far (skr.) |
+| VOR | → r4 c1 | VHF omnidirekcioni opseg (skr.) |
 | RONDA | → r4 c5 | Grad u Andaluziji |
 | DOPIS | ↓ r4 c8 | Službeno pismo |
 | DAN | → r4 c11 | Suprotno od noći |
@@ -184,7 +188,15 @@ The page never contains the solution letters: "Proveri" compares a hash of the f
 
 ## Stage 8 · Melita
 
+Page: a vellum manuscript leaf (tab title **TEMPLVM**, so the answer isn't in the tab). The six slots fill themselves with the glyphs this device has already seen: `common.js` records every stage opened (`fl300.seen`), and fragment I–IV show once stages 2–5 were opened, V and VI once stage 7 was (V arrives with Poirot's email, which links there). Other devices on the team start empty; the glyphs are still in each page's footer.
+
+The frame is a band of all 25 Templar glyphs, repeating, in a fixed **scrambled** order (`QKEXTBNHZAWOGLDRVIMSUCYFP`), so it says "this is an alphabet you've seen" without being a key. Generated by `node tools/fl300.mjs border` → `site/img/templar-border-h.svg` / `-v.svg`.
+
 Templar alphabet = dCode **"Normal, historical version (1)"** (the default). Glyphs: I kite→ (M) · II triangle▷ (E) · III kite↑ (L) · IV kite↓ (I) · V triangle◁ with dot (T) · VI V-shape (A). dCode's alternative "scout" alphabet swaps E/H and K/L, exactly the letters in MELITA; a team using it reads *M H K I T A*. If someone is stuck there, the nudge is "use dCode's default alphabet". All 25 glyphs were rendered next to dCode's own images and match. `verify` classifies the geometry of each SVG against the alphabet table in the tool.
+
+## Stage 9 · Invite
+
+An **ACARS uplink** feeding out of the cockpit's thermal printer (a dark panel with a slot; the paper slides out line by line, torn zigzag edge). Stamped with the current Zulu time, FROM LYBE TWR 118.100 TO **the team's own callsign** from the door (`fl300.callsign` on that device, falling back to YU-DNV), TYPE PA38; then "<CALLSIGN> RWY 12L CLEARED TO LAND", the party as message fields (EVENT / DATE / TIME 2000 LT / PLACE), WHEELS DOWN AT EIGHT., the live LYBE METAR, and printed `[ADD TO CALENDAR]` (.ics, 19:00–23:00Z) and `[MAP]` links. Reduced-motion users get the paper without the feed.
 
 ## Type choices (approve or swap)
 
@@ -242,9 +254,9 @@ Templar alphabet = dCode **"Normal, historical version (1)"** (the default). Gly
 2. In `email-worker/wrangler.toml`: set `FORWARD_TO` to that Proton address, and `id` to the KV namespace id from step 3 above (same namespace as the board).
 3. `cd email-worker && npm install && npx wrangler login && npx wrangler deploy`
 4. Email Routing → Routing rules → custom address `poirot@fl300.xyz` → *Send to a Worker* → `poirot`.
-5. Test from Gmail/iCloud: "svi", "Ema", "a stranger", "hmm no idea". Check the replies, the Proton copies, and Poirot's post on the board.
+5. Test from Gmail/iCloud: "Nikola", "Uhvatili smo Nikolu", "Ema", "hmm no idea". Check the replies, the Proton copies, and Poirot's post on the board.
 
-What the Worker does: always forwards to `FORWARD_TO`; ignores (forward only) mail with `Auto-Submitted` other than `no`, mail from `@fl300.xyz`, and mail whose first `mx.cloudflare.net` Authentication-Results lacks `dmarc=pass`; reads subject + plain body (HTML stripped as fallback), drops quoted history (`>` lines and everything from an "On … wrote:" / "… je napisao/la:" line on, including Gmail's wrapped two-line version), ignores times and dates so "12:05" isn't "12"; matches whole words in order correct → stranger → exactly one name → none; replies once in-thread (multipart, hand-built MIME); logs `{time, from, subject, outcome}` to KV. If a reply throws, the outcome is logged with "/ error" and highlighted on the board.
+What the Worker does: always forwards to `FORWARD_TO`; ignores (forward only) mail with `Auto-Submitted` other than `no`, mail from `@fl300.xyz`, and mail whose first `mx.cloudflare.net` Authentication-Results lacks `dmarc=pass`; strips quoted history (`>` lines and everything from an "On … wrote:" / "… napisao:" line on); matches whole words: Nikola (any case) → correct, another guest's name → wrong, else none; replies once in-thread (multipart, hand-built MIME); logs `{time, from, subject, outcome}` to KV. If a reply throws, the outcome is logged with "/ error" and highlighted on the board.
 
 **Local preview:** `cd site && python3 -m http.server 8000` (pages and answers work, the board API doesn't), or `npx wrangler pages dev site` for the functions too.
 
@@ -259,4 +271,4 @@ What the Worker does: always forwards to `FORWARD_TO`; ignores (forward only) ma
 | Harker diary dates, ch. I–IV | 3, 4, 5 (twice), 7, 8, 12, 15, 18, 19, 28, 31 May; 17, 24, 25, 29, 30 June | Gutenberg #345 as hosted; `verify` checks the refs. |
 | dCode Templar alphabet | default "Normal, historical version (1)" | https://www.dcode.fr/templars-cipher (checked 10 Nov 2026). |
 | ICAO codes in the grid | AIP, ILS, VOR as abbreviations | — |
-| Invite METAR | `LYBE 141900Z …` = 20:00 local (UTC+1 in November) | — |
+| Invite METAR | Live from aviationweather.gov through `/api/metar` (their API has no CORS, so a Pages Function fetches it, edge-cached 10 min). If it fails, the printed `LYBE 141900Z …` (= 20:00 local) stays. | — |

@@ -61,15 +61,10 @@
   .swap:active { background: #26282a; }
   .controls { display: flex; align-items: center; justify-content: flex-end; gap: 14px; margin: 2px 0 4px; }
   .controls .hint { flex: 1; font-size: 9px; letter-spacing: .12em; color: var(--label-dim); text-transform: uppercase; line-height: 1.5; }
-  .sel {
-    width: 34px; height: 64px; background: #18191b; border: 1px solid #000; border-top-color: #4a4d50; position: relative; cursor: pointer; padding: 0;
-    font: 700 10px "B612", sans-serif; color: var(--label-dim);
-  }
-  .sel .slot { position: absolute; left: 13px; top: 9px; width: 6px; height: 44px; background: #050505; }
-  .sel .bat { position: absolute; left: 7px; width: 18px; height: 16px; background: #4a4d50; border: 1px solid #000; top: 8px; transition: top .12s; }
-  .sel .bat::after { content: ""; position: absolute; left: 6px; top: 5px; width: 4px; height: 4px; background: var(--seg); }
-  .sel[data-v="2"] .bat { top: 38px; }
-  .sel .n1, .sel .n2 { position: absolute; right: -14px; } .sel .n1 { top: 10px; } .sel .n2 { top: 40px; }
+  .aud { width: 50px; height: 52px; border: 1px solid #000; border-top-color: #55585b; border-radius: 3px; background: #333538; color: var(--label); font: 700 9px "B612", sans-serif; letter-spacing: .08em; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; cursor: pointer; padding: 0; }
+  .aud .lamp { width: 22px; height: 5px; background: #1b2a1b; border: 1px solid #0a0f0a; }
+  .on .aud[aria-pressed="true"] .lamp { background: #7dff4a; border-color: #2e5a1c; }
+  .aud:active { background: #2c2e30; }
   .knob { width: 120px; height: 120px; touch-action: none; cursor: grab; flex: none; }
   .knob:active { cursor: grabbing; }
 
@@ -90,6 +85,7 @@
     .lcd .ghost, .lcd .digits, .lcd input { font-size: 17px; }
     .lcd { padding-left: 24px; height: 42px; }
     .heads, .rrow { grid-template-columns: 1fr 38px 1fr; gap: 5px; }
+    .controls { gap: 10px; }
     .knob { width: 104px; height: 104px; }
   }
 </style>
@@ -105,18 +101,13 @@
     <section class="band" data-band="com">
       <div class="heads"><span>Comm active</span><span>Comm standby</span></div>
       <div class="rrow" data-i="1">
-        <div class="lcd act"><span class="tag">COM1</span><span class="rx">RX</span><span class="ghost">888.888</span><span class="digits"></span></div>
-        <button class="swap" aria-label="Swap COM1">&#x2194;</button>
-        <label class="lcd sby"><span class="ghost">888.888</span><input inputmode="decimal" aria-label="COM1 standby frequency" disabled></label>
-      </div>
-      <div class="rrow" data-i="2">
-        <div class="lcd act"><span class="tag">COM2</span><span class="rx">RX</span><span class="ghost">888.888</span><span class="digits"></span></div>
-        <button class="swap" aria-label="Swap COM2">&#x2194;</button>
-        <label class="lcd sby"><span class="ghost">888.888</span><input inputmode="decimal" aria-label="COM2 standby frequency" disabled></label>
+        <div class="lcd act"><span class="tag">COM</span><span class="rx">RX</span><span class="ghost">888.888</span><span class="digits"></span></div>
+        <button class="swap" aria-label="Swap COM">&#x2194;</button>
+        <label class="lcd sby"><span class="ghost">888.888</span><input inputmode="decimal" aria-label="COM standby frequency" disabled></label>
       </div>
       <div class="controls">
         <span class="hint">Outer ring MHz<br>Inner knob kHz</span>
-        <button class="sel" data-v="1" aria-label="COM knob controls COM1"><span class="slot"></span><span class="bat"></span><span class="n1">1</span><span class="n2">2</span></button>
+        <button class="aud" aria-pressed="true" aria-label="COM audio"><span class="lamp"></span>COM</button>
         <svg class="knob" viewBox="0 0 120 120" aria-label="COM tuning knob" role="slider"></svg>
       </div>
     </section>
@@ -124,18 +115,13 @@
     <section class="band" data-band="nav">
       <div class="heads"><span>Nav active</span><span>Nav standby</span></div>
       <div class="rrow" data-i="1">
-        <div class="lcd act"><span class="tag">NAV1</span><span class="rx">ID</span><span class="ghost">888.88</span><span class="digits"></span></div>
-        <button class="swap" aria-label="Swap NAV1">&#x2194;</button>
-        <label class="lcd sby"><span class="ghost">888.88</span><input inputmode="decimal" aria-label="NAV1 standby frequency" disabled></label>
-      </div>
-      <div class="rrow" data-i="2">
-        <div class="lcd act"><span class="tag">NAV2</span><span class="rx">ID</span><span class="ghost">888.88</span><span class="digits"></span></div>
-        <button class="swap" aria-label="Swap NAV2">&#x2194;</button>
-        <label class="lcd sby"><span class="ghost">888.88</span><input inputmode="decimal" aria-label="NAV2 standby frequency" disabled></label>
+        <div class="lcd act"><span class="tag">NAV</span><span class="rx">ID</span><span class="ghost">888.88</span><span class="digits"></span></div>
+        <button class="swap" aria-label="Swap NAV">&#x2194;</button>
+        <label class="lcd sby"><span class="ghost">888.88</span><input inputmode="decimal" aria-label="NAV standby frequency" disabled></label>
       </div>
       <div class="controls">
         <span class="hint">Outer ring MHz<br>Inner knob kHz</span>
-        <button class="sel" data-v="1" aria-label="NAV knob controls NAV1"><span class="slot"></span><span class="bat"></span><span class="n1">1</span><span class="n2">2</span></button>
+        <button class="aud" aria-pressed="false" aria-label="NAV audio"><span class="lamp"></span>NAV</button>
         <svg class="knob" viewBox="0 0 120 120" aria-label="NAV tuning knob" role="slider"></svg>
       </div>
     </section>
@@ -169,12 +155,13 @@
 <script>
 // ---------- radio model ----------
 const BANDS = {
-  com: { lo: 118, hi: 136, step: 25, dec: 3, active: ['121.900', '127.125'], standby: ['122.150', '134.350'] },
-  nav: { lo: 108, hi: 117, step: 50, dec: 2, active: ['109.10', '112.60'], standby: ['114.30', '111.10'] },
+  com: { lo: 118, hi: 136, step: 25, dec: 3, active: ['121.900'], standby: ['122.150'] },
+  nav: { lo: 108, hi: 117, step: 50, dec: 2, active: ['109.10'], standby: ['114.30'] },
 };
 // NAV idents (printed on the chart, so they may live here)
 const IDENTS = { '112.05': 'BGD', '110.30': 'YUB', '116.60': 'VAL' };
-let powered = false, listening = null; // listening = {band, i}
+let powered = false;
+const STATIC = 0.015; // soft hiss on dead frequencies
 
 // frequency as integer kHz
 const toK = s => Math.round(parseFloat(s) * 1000);
@@ -198,7 +185,8 @@ function tune(k, b, ring, dir) { // ring: 'outer' MHz, 'inner' kHz; no carry, li
   return mhz * 1000 + khz;
 }
 
-const state = {}; for (const b in BANDS) state[b] = { act: BANDS[b].active.map(toK), sby: BANDS[b].standby.map(toK), sel: 0 };
+// aud = band audio switch. One radio per band (act[0]/sby[0]).
+const state = {}; for (const b in BANDS) state[b] = { act: BANDS[b].active.map(toK), sby: BANDS[b].standby.map(toK), aud: b === 'com', tok: 0 };
 const $ = (s, el = document) => el.querySelector(s), $$ = (s, el = document) => [...el.querySelectorAll(s)];
 
 function render() {
@@ -209,32 +197,37 @@ function render() {
       const inp = $('.sby input', row);
       if (document.activeElement !== inp) inp.value = powered ? fmt(state[b].sby[i], b) : '';
       inp.disabled = !powered;
-      $('.act', row).classList.toggle('rxing', !!listening && listening.b === b && listening.i === i);
+      $('.act', row).classList.toggle('rxing', state[b].aud);
     });
+    $('.aud', sec).setAttribute('aria-pressed', state[b].aud);
   }
-  $('#sq').textContent = powered ? '7000' : '';
+  $('#sq').textContent = powered ? '3301' : '';
   $('#stack').classList.toggle('on', powered);
 }
 
 // ---------- audio ----------
-let ac, master, noiseGain, identTimer, player;
+let ac, master, player, identOsc, navSrc; const navBufs = {}; const noise = {}, identTimer = {};
 function initAudio() {
   if (ac) return;
   try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch {}
   ac = new (window.AudioContext || window.webkitAudioContext)();
   master = ac.createGain(); master.gain.value = 0.9; master.connect(ac.destination);
-  // soft radio static: white noise through a band-pass
+  // soft radio static: white noise through a band-pass, one gain per band
   const buf = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate), d = buf.getChannelData(0);
   for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
   const src = ac.createBufferSource(); src.buffer = buf; src.loop = true;
   const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1800; bp.Q.value = 0.6;
-  noiseGain = ac.createGain(); noiseGain.gain.value = 0;
-  src.connect(bp).connect(noiseGain).connect(master); src.start();
+  src.connect(bp); src.start();
+  for (const b in BANDS) { noise[b] = ac.createGain(); noise[b].gain.value = 0; bp.connect(noise[b]).connect(master); }
   player = new Audio(); player.loop = true; player.preload = 'auto'; player.playsInline = true;
   player.play().catch(() => {}); player.pause(); // unlock on iOS within the PWR gesture
 }
-function setStatic(v) { if (ac) noiseGain.gain.setTargetAtTime(v, ac.currentTime, 0.05); }
-function stopAll() { clearTimeout(identTimer); identTimer = null; if (player) { player.pause(); player.removeAttribute('src'); } setStatic(0); }
+function setStatic(b, v) { if (ac) noise[b].gain.setTargetAtTime(v, ac.currentTime, 0.05); }
+function stopBand(b) {
+  state[b].tok++; clearTimeout(identTimer[b]); identTimer[b] = null; setStatic(b, 0);
+  if (b === 'nav') { for (const n of [identOsc, navSrc]) try { n && n.stop(); } catch {} identOsc = navSrc = null; }
+  if (b === 'com' && player) { player.pause(); player.removeAttribute('src'); }
+}
 
 function morse(text) {
   const M = { A: '.-', B: '-...', C: '-.-.', D: '-..', E: '.', G: '--.', L: '.-..', U: '..-', V: '...-', Y: '-.--' };
@@ -246,58 +239,64 @@ function morse(text) {
       g.gain.setTargetAtTime(0.22, t, 0.004); g.gain.setTargetAtTime(0, t + len, 0.004); t += len + dot; }
     t += 2 * dot; // 3 dots between letters (1 already added)
   }
-  osc.start(t0); osc.stop(t + 0.1);
+  osc.start(t0); osc.stop(t + 0.1); identOsc = osc;
   return t - t0;
 }
-async function listen(b, i) {
-  listening = { b, i }; render();
-  if (!powered || !ac) return;
-  stopAll(); ac.resume();
-  const k = state[b].act[i], canon = FL.freq(k / 1000, b === 'nav');
+// (re)start what band b should be playing: its selected radio, if powered and its audio switch is on
+async function update(b) {
+  render();
+  if (!ac) return;
+  stopBand(b);
+  const s = state[b]; if (!powered || !s.aud) return;
+  ac.resume();
+  const tok = s.tok, k = s.act[0], canon = FL.freq(k / 1000, b === 'nav');
   if (b === 'nav') {
     const id = IDENTS[canon];
-    setStatic(id ? 0.02 : 0.06);
-    if (id) { const loop = () => { morse(id); identTimer = setTimeout(loop, 8000); }; loop(); }
+    setStatic(b, id ? STATIC / 3 : STATIC);
+    if (!id) return;
+    // Dario's recorded ident if present (/a/<hash>.mp3, looped as-is), else synthesise it
+    const url = await FL.audio(canon);
+    if (!(canon in navBufs)) navBufs[canon] = fetch(url).then(r => r.ok ? r.arrayBuffer() : null)
+      .then(a => a && new Promise((ok, no) => ac.decodeAudioData(a, ok, no))).catch(() => null);
+    const buf = await navBufs[canon];
+    if (s.tok !== tok) return; // retuned meanwhile
+    if (buf) { navSrc = ac.createBufferSource(); navSrc.buffer = buf; navSrc.loop = true; navSrc.connect(master); navSrc.start(); setStatic(b, 0); return; }
+    const loop = () => { if (s.tok !== tok) return; morse(id); identTimer[b] = setTimeout(loop, 8000); }; loop();
     return;
   }
-  setStatic(0.06);
+  setStatic(b, STATIC);
   const url = await FL.audio(canon);
-  if (listening.b !== b || listening.i !== i || state[b].act[i] !== k) return; // retuned meanwhile
+  if (s.tok !== tok) return; // retuned meanwhile
   player.src = url;
   player.onerror = () => {}; // 404 → keep the static
-  player.oncanplay = () => { setStatic(0.012); };
+  player.oncanplay = () => { if (s.tok === tok) setStatic(b, 0); }; // recordings carry their own hiss
   player.play().catch(() => {});
 }
 
 // ---------- wiring ----------
 $('#pwr').addEventListener('click', () => {
   powered = !powered; $('#pwr').setAttribute('aria-pressed', powered);
-  if (powered) { initAudio(); ac.resume(); listen('com', 0); } else { stopAll(); listening = null; }
-  render();
+  if (powered) initAudio();
+  for (const b in BANDS) update(b);
 });
 for (const b in BANDS) {
   const sec = $(`[data-band=${b}]`);
   $$('.rrow', sec).forEach((row, i) => {
     $('.swap', row).addEventListener('click', () => {
       if (!powered) return;
-      const s = state[b]; [s.act[i], s.sby[i]] = [s.sby[i], s.act[i]]; listen(b, i);
+      const s = state[b]; [s.act[i], s.sby[i]] = [s.sby[i], s.act[i]]; update(b);
     });
     const inp = $('.sby input', row);
-    inp.addEventListener('focus', () => { selectRow(b, i); inp.select(); });
+    inp.addEventListener('focus', () => inp.select());
     const commit = () => { const k = parse(inp.value, b); if (k) state[b].sby[i] = k; inp.blur(); render(); };
     inp.addEventListener('change', commit);
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); commit(); } });
     inp.addEventListener('blur', () => setTimeout(render, 0));
   });
-  const sel = $('.sel', sec);
-  sel.addEventListener('click', () => selectRow(b, state[b].sel ? 0 : 1));
+  $('.aud', sec).addEventListener('click', () => { state[b].aud = !state[b].aud; update(b); });
   makeKnob($('.knob', sec), (ring, dir) => {
-    if (!powered) return; const s = state[b]; s.sby[s.sel] = tune(s.sby[s.sel], b, ring, dir); render();
+    if (!powered) return; const s = state[b]; s.sby[0] = tune(s.sby[0], b, ring, dir); render();
   });
-}
-function selectRow(b, i) {
-  state[b].sel = i; const sel = $(`[data-band=${b}] .sel`);
-  sel.dataset.v = i + 1; sel.setAttribute('aria-label', `${b.toUpperCase()} knob controls ${b.toUpperCase()}${i + 1}`);
 }
 
 // dual concentric knob: drag to rotate (30° per click), or tap left/right half

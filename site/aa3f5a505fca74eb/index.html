@@ -4,53 +4,89 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>FL300 · VIII · MELITA</title>
-<!-- Seal: "Seal of Templars" (Sigillum Militum Xpisti / De Templo Christi), engraving from T. A. Archer & C. L. Kingsford, The Crusades (1894). Public domain, via Wikimedia Commons. -->
+<title>FL300 · VIII · TEMPLVM</title>
+<!-- Seal: "Seal of Templars" (Sigillum Militum Xpisti / De Templo Christi), engraving from T. A. Archer & C. L. Kingsford, The Crusades (1894). Public domain, via Wikimedia Commons. Recoloured to brown ink on transparent. -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/fl300.css">
 <style>
-  :root { --ink: #1c1a18; --paper: #f4f2ec; --red: #8e1b17; --answer-font: "EB Garamond", serif; }
+  :root { --ink: #231d17; --paper: #efe5cf; --red: #8e1b17; --gold: #a8843a; --answer-font: "EB Garamond", serif; }
   * { box-sizing: border-box; }
-  html, body { margin: 0; background: var(--paper); color: var(--ink); }
-  body { font-family: "EB Garamond", Garamond, serif; }
-  main { max-width: 34rem; margin: 0 auto; padding: 48px 20px 24px; text-align: center; }
-  .cross { width: 92px; height: 92px; display: block; margin: 0 auto 2.4rem; }
-  .motto { font-style: italic; font-size: 1.15rem; line-height: 1.5; margin: 0 0 2.6rem; }
-  .seal { display: block; width: 100%; max-width: 420px; height: auto; margin: 0 auto 2.8rem; mix-blend-mode: multiply; }
-  .instr { font-variant: small-caps; letter-spacing: .14em; font-size: 1.35rem; margin: 0 0 1.6rem; }
-  .slots { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; max-width: 26rem; margin: 0 auto; }
-  .slot { aspect-ratio: 1; border: 1px solid var(--ink); }
-  .slots span { font-size: .95rem; letter-spacing: .08em; margin-top: .4rem; display: block; }
-  form.answer { text-align: left; }
-  footer { height: 3rem; }
+  html, body { margin: 0; background: #1b1714; color: var(--ink); }
+  body { font-family: "EB Garamond", Garamond, serif; padding: 18px 12px 0; }
+
+  /* the vellum leaf, ruled in red like a manuscript */
+  .leaf { --band: 16px; max-width: 36rem; margin: 0 auto; background: var(--paper); padding: calc(var(--band) + 36px) calc(var(--band) + 24px) calc(var(--band) + 28px); position: relative; text-align: center;
+    box-shadow: 0 0 0 1px #c9b994, 0 18px 50px rgba(0, 0, 0, .55); }
+  /* the frame: two red rules with a band of Templar glyphs between them (scrambled order: a hint, not a key) */
+  .leaf::before, .leaf::after { content: ""; position: absolute; border: 1.5px solid var(--red); pointer-events: none; }
+  .leaf::before { inset: 8px; } .leaf::after { inset: calc(var(--band) + 14px); border-width: 1px; }
+  .band { position: absolute; pointer-events: none; opacity: .8; }
+  .band.t, .band.b { left: 14px; right: 14px; height: var(--band); background: url(/img/templar-border-h.svg) repeat-x center / auto 11px; }
+  .band.t { top: 12px; } .band.b { bottom: 12px; background-position-x: -333px; }
+  .band.l, .band.r { top: calc(var(--band) + 14px); bottom: calc(var(--band) + 14px); width: var(--band); background: url(/img/templar-border-v.svg) repeat-y center / 11px auto; }
+  .band.l { left: 12px; background-position-y: -151px; } .band.r { right: 12px; background-position-y: -477px; }
+
+  .cross { width: 70px; height: 70px; display: block; margin: 4px auto 14px; }
+  .order { font-variant: small-caps; letter-spacing: .16em; font-size: .78rem; color: var(--red); margin: 0 0 1.6rem; line-height: 1.5; }
+  .motto { font-style: italic; font-size: 1.2rem; line-height: 1.5; margin: 0 auto 1.8rem; max-width: 22rem; text-align: left; }
+  .motto::first-letter { float: left; font: 400 3.6rem/0.8 "UnifrakturMaguntia", serif; color: var(--red); padding: .32rem .4rem 0 0; font-style: normal; }
+  .rule { width: 50%; margin: 0 auto 1.6rem; border: 0; border-top: 1px solid var(--gold); position: relative; overflow: visible; }
+  .rule::after { content: "✠"; position: absolute; left: 50%; top: -.72em; transform: translateX(-50%); background: var(--paper); color: var(--red); padding: 0 .5em; font-size: 1rem; }
+  .seal { display: block; width: 100%; max-width: 400px; height: auto; margin: 0 auto 1.8rem; } /* transparent PNG with brown ink: no blend modes (iOS draws them wrong) */
+
+  .instr { font: 400 clamp(1.7rem, 7vw, 2.2rem) "UnifrakturMaguntia", serif; color: var(--red); margin: 0 0 .3rem; }
+  .count { font-variant: small-caps; letter-spacing: .14em; font-size: .85rem; margin: 0 0 1.2rem; color: #6b5d48; }
+
+  /* six places for the fragments */
+  .slots { display: grid; grid-template-columns: repeat(6, 1fr); gap: clamp(5px, 2vw, 12px); max-width: 26rem; margin: 0 auto; }
+  .slots span { display: block; font-size: .95rem; letter-spacing: .08em; color: var(--red); margin-bottom: .3rem; font-variant: small-caps; }
+  .slot { aspect-ratio: 1; border: 1px solid #b7a47c; background: #e6d9bc; box-shadow: inset 0 2px 5px rgba(60, 40, 20, .25); display: grid; place-items: center; }
+  .slot img { width: 74%; height: 74%; object-fit: contain; opacity: 0; transform: scale(1.5); }
+  .slot.got { background: #f4ecda; }
+  .slot.got img { animation: press .5s cubic-bezier(.2, .9, .3, 1.2) forwards; animation-delay: calc(var(--i) * .18s + .3s); }
+  @keyframes press { to { opacity: 1; transform: none; } }
+  .slot:not(.got)::after { content: "·"; color: #b7a47c; font-size: 1.4rem; }
+
+  form.answer { text-align: left; margin-top: 2.2rem; }
+  .colophon { text-align: center; color: #6e6254; font-size: .78rem; letter-spacing: .14em; font-variant: small-caps; margin: 18px 0 30px; }
+  @media (prefers-reduced-motion: reduce) { .slot.got img { animation: none; opacity: 1; transform: none; } }
 </style>
 </head>
 <body data-stage="8">
-<main>
+<main class="leaf">
+  <div class="band t"></div><div class="band b"></div><div class="band l"></div><div class="band r"></div>
   <svg class="cross" viewBox="0 0 100 100" role="img" aria-label="Cross pattée">
     <path fill="#8e1b17" d="M50 46 38 6Q50 10 62 6ZM54 50 94 38Q90 50 94 62ZM50 54 62 94Q50 90 38 94ZM46 50 6 62Q10 50 6 38Z"/>
     <rect x="44" y="44" width="12" height="12" fill="#8e1b17" transform="rotate(45 50 50)"/>
   </svg>
-  <p class="motto">Non nobis, Domine, non nobis,<br>sed nomini tuo da gloriam.</p>
-  <img class="seal" src="/img/templar-seal.jpg" width="556" height="281" alt="The seal of the Knights Templar: two knights on one horse, and the dome of the Temple.">
+  <p class="order">Pauperes Commilitones Christi<br>Templique Salomonici</p>
+  <p class="motto">Non nobis, Domine, non nobis, sed nomini tuo da gloriam.</p>
+  <hr class="rule">
+  <img class="seal" src="/img/templar-seal.png" width="556" height="281" alt="The seal of the Knights Templar: two knights on one horse, and the dome of the Temple.">
   <p class="instr">Fragmenta collige.</p>
-  <div class="slots" aria-label="Six empty places, numbered I to VI">
-    <div><div class="slot"></div><span>I</span></div>
-    <div><div class="slot"></div><span>II</span></div>
-    <div><div class="slot"></div><span>III</span></div>
-    <div><div class="slot"></div><span>IV</span></div>
-    <div><div class="slot"></div><span>V</span></div>
-    <div><div class="slot"></div><span>VI</span></div>
-  </div>
+  <p class="count" id="count"></p>
+  <div class="slots" id="slots" aria-label="Six places for the fragments, I to VI"></div>
   <form class="answer" autocomplete="off">
     <label for="ans">Verbum</label>
     <div class="row"><input id="ans" autocapitalize="characters" spellcheck="false"><button type="submit">Intra</button></div>
     <output class="verdict" aria-live="polite"></output>
   </form>
-  <footer></footer>
 </main>
+<p class="colophon">Anno Domini MMXXVI</p>
 <script src="/js/common.js"></script>
+<script>
+  // fragment → the stage whose page showed it (V comes by Poirot's email, which links to stage 7)
+  const FRAGS = [['i', '2'], ['ii', '3'], ['iii', '4'], ['iv', '5'], ['v', '7'], ['vi', '7']];
+  const seen = FL.seen(), box = document.getElementById('slots'); let n = 0;
+  FRAGS.forEach(([f, st], i) => {
+    const got = seen.has(st), d = document.createElement('div');
+    d.innerHTML = `<span>${f}</span><div class="slot${got ? ' got' : ''}" style="--i:${n}">${got ? `<img src="/g/${f}.png" alt="Fragmentum ${f.toUpperCase()}">` : ''}</div>`;
+    if (got) n++; box.append(d);
+  });
+  const ROM = ['nullum', 'I', 'II', 'III', 'IV', 'V', 'VI'];
+  document.getElementById('count').textContent = n === 6 ? 'Omnia collecta.' : `${ROM[n]} ex VI collecta`;
+</script>
 </body>
 </html>

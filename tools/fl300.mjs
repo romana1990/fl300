@@ -32,7 +32,7 @@ export const STAGES = [
   [9, 'INVITE', 'MELITA'],
 ];
 export const STAGE7 = '/c7e04b9a1f5d2e83/'; // random, delivered by Poirot's email
-const WRONG = ['1330', 'DRACULA', 'DRAKULA', 'TRAJAN', 'DAKIJA', 'ORIENTEXPRESS', 'MALTA', 'KRST', 'TEMPLAR', 'POIROT'];
+const WRONG = ['1330', 'DRACULA', 'DRAKULA', 'TRAJAN', 'DAKIJA', 'APPLE', 'MURDER', 'MALTA', 'KRST', 'TEMPLAR', 'POIROT'];
 
 const rot = (s, k) => s.replace(/[a-z]/gi, ch => {
   const b = ch <= 'Z' ? 65 : 97; return String.fromCharCode((ch.charCodeAt(0) - b + k + 26) % 26 + b);
@@ -70,6 +70,18 @@ function glyphSVG(letter) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="120" height="120">${body}${d}</svg>\n`;
 }
 
+// Stage 8 frame: every Templar glyph in a fixed scrambled order (NOT alphabetical, so the border is no key).
+const BORDER_ORDER = 'QKEXTBNHZAWOGLDRVIMSUCYFP';
+function borderSVG(vertical, color = '#8e1b17') {
+  const step = 150, n = BORDER_ORDER.length, glyphs = [...BORDER_ORDER].map((L, i) => {
+    const inner = glyphSVG(L).replace(/^<svg[^>]*>|<\/svg>\s*$/g, '').replaceAll('#000', color);
+    const [x, y] = vertical ? [0, i * step + 25] : [i * step + 25, 0];
+    return `<g transform="translate(${x} ${y})">${inner}</g>`;
+  }).join('');
+  const [w, h] = vertical ? [100, n * step] : [n * step, 100];
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">${glyphs}</svg>\n`;
+}
+
 function classifySVG(svg) {
   const pts = s => s.trim().split(/\s+/).map(p => p.split(',').map(Number));
   const dot = /<circle/.test(svg) ? 1 : 0;
@@ -94,39 +106,35 @@ function classifySVG(svg) {
 const letterOf = sig => Object.keys(TEMPLAR).find(k => TEMPLAR[k].join() === sig?.join());
 
 // ---- Orient Express: the clue logic -----------------------------------------
-// Each passenger's observed traits (Poirot's notes on the page). X = the stranger.
+// Stage 6 integram. People / destinations / drinks by index; c = compartment 0..4 (No. 1..5, No. 5 is next to the dining car).
+// Each clue mirrors one line of "The conductor's notes" on the page, in the same order.
 export const ORIENT = {
-  people: ['Milos', 'Ema', 'Danica3', 'Nikola', 'Aleksa', 'Danica6', 'Aleksandra', 'Ivan', 'Nevena', 'Pedja', 'Mikan', 'Zorana'],
-  traits: {
-    Milos: ['tall'], Ema: ['lefthanded'], Danica3: ['coffee'], Nikola: ['strong'],
-    Aleksa: ['hungry'], Danica6: ['redwool'], Aleksandra: ['dessertfork'], Ivan: ['sliderule'],
-    Nevena: ['indecisive'], Pedja: ['violetink'], Mikan: ['paprika'], Zorana: ['romannumerals'],
-    X: [], // nothing is known about the stranger; he is excluded by time, not by traits
-  },
-  // the twelve marks, in the doctor's order, with the trait each one demands
-  marks: ['strong', 'lefthanded', 'indecisive', 'tall', 'coffee', 'dessertfork', 'violetink', 'hungry', 'redwool', 'sliderule', 'paprika', 'romannumerals'],
-  pairs: [['Milos', 'Ema'], ['Danica3', 'Nikola'], ['Aleksa', 'Danica6'], ['Aleksandra', 'Ivan'], ['Nevena', 'Pedja'], ['Mikan', 'Zorana']],
-  times: { strangerLeft: '00:58', cakeWholeAt: '01:15', snowUntouchedAfterVinkovci: true },
+  people: ['Ema', 'Ivan', 'Nevena', 'Nikola', 'Pedja'],
+  dest: ['Trieste', 'Zagreb', 'Belgrade', 'Sofia', 'Istanbul'], // route order
+  drink: ['tea', 'coffee', 'champagne', 'rakija', 'water'],
+  answer: 'Nikola', last: 4,
 };
-function solveOrient() {
-  const O = ORIENT, P = [...O.people, 'X'];
-  // X could only have stabbed the cake if he was aboard after it was set down whole.
-  const present = p => p !== 'X' || !(O.times.snowUntouchedAfterVinkovci && O.times.strangerLeft < O.times.cakeWholeAt);
-  const cands = O.marks.map(t => P.filter(p => present(p) && (p === 'X' ? false : O.traits[p].includes(t))));
-  // the "stranger theory": X needs to be capable of every mark (no traits known) — but he is absent
-  const solutions = [];
-  const rec = (i, who) => {
-    if (i === O.marks.length) {
-      const G = new Set(who);
-      // innocent people tell the truth: each pair statement "neither of us left the compartment"
-      const ok = O.pairs.every(([a, b]) => (G.has(a) || G.has(b)) ? (G.has(a) && G.has(b)) : true);
-      if (ok) solutions.push([...who]);
-      return;
-    }
-    for (const p of cands[i]) rec(i + 1, [...who, p]);
-  };
-  rec(0, []);
-  return { cands, solutions, strangerPossible: present('X') };
+{
+  const by = (a, v) => a.indexOf(v);
+  const [EM, IV, NE, NI, PE] = [0, 1, 2, 3, 4], [TRI, ZAG, BEL, SOF, IST] = [0, 1, 2, 3, 4], [TEA, COF, CHA, RAK, WAT] = [0, 1, 2, 3, 4];
+  ORIENT.clues = [
+    s => s.k[by(s.c, 0)] === CHA,       //  1 champagne went to No. 1
+    s => s.k[PE] === RAK,               //  2 Peđa drank rakija
+    s => s.d[IV] === IST,               //  3 Ivan to the end of the line
+    s => s.c[by(s.d, SOF)] === 3,       //  4 Sofia is in No. 4
+    s => s.d[by(s.k, RAK)] === BEL,     //  5 rakija gets off at Belgrade
+    s => s.k[NE] === COF,               //  6 Nevena coffee
+    s => s.c[IV] === 1,                 //  7 Ivan in No. 2
+    s => s.d[by(s.k, WAT)] === ZAG,     //  8 Zagreb drank water
+    s => s.c[PE] === 2,                 //  9 Peđa in No. 3
+    s => s.d[EM] !== ZAG,               // 10 Ema not to Zagreb
+  ];
+}
+function solveOrient(clues = ORIENT.clues) {
+  const perms = a => a.length < 2 ? [a] : a.flatMap((x, i) => perms([...a.slice(0, i), ...a.slice(i + 1)]).map(r => [x, ...r]));
+  const P5 = perms([0, 1, 2, 3, 4]), out = [];
+  for (const c of P5) for (const k of P5) for (const d of P5) { const s = { c, k, d }; if (clues.every(f => f(s))) out.push(s); }
+  return out;
 }
 
 // ---- verify -----------------------------------------------------------------
@@ -138,6 +146,10 @@ async function verify(base) {
   console.log('1. answers → folders');
   ok(exists('404.html'), '404.html exists');
   for (const [n, name, ans] of STAGES) { const p = await FL.path(ans); ok(exists(p + 'index.html'), `stage ${n} ${name}: "${ans}" → ${p}`); }
+  for (const ans of ['ORIENT EXPRESS', 'THE ORIENT EXPRESS', 'MURDER ON THE ORIENT EXPRESS']) {
+    const p = await FL.path(ans), f = p + 'index.html';
+    ok(exists(f) && fs.readFileSync(path.join(SITE, f), 'utf8').includes(await FL.path('ORIENT')), `alias "${ans}" → ${p} redirects to stage 6`);
+  }
   ok(exists(STAGE7 + 'index.html'), `stage 7 CRVCIVERBVM (Poirot's link) → ${STAGE7}`);
   for (const w of WRONG) { const p = await FL.path(w); ok(!exists(p), `wrong "${w}" → ${p} absent`); }
   for (const [a, b] of [['malteški krst', 'MALTESKI KRST'], ['Drakul', 'DRAKVL'], ['traianus', 'TRAJANUS']])
@@ -200,17 +212,29 @@ async function verify(base) {
     ok(plain.startsWith('SENATVSPOPVLVSQVEROMANVS') && plain.endsWith('CLAVISDACIA'), 'w = 23 reads SENATVS … CLAVIS DACIA');
     const hits = []; for (let w = 2; w <= 40; w++) if (/CLAVISDACIA|SENATVS/.test(readAt(w))) hits.push(w);
     ok(hits.join() === '23', `only w = 23 produces the plaintext (hits: ${hits.join(',')})`);
+    const rom = r => { const v = { I: 1, V: 5, X: 10, L: 50 }; let n = 0; for (let i = 0; i < r.length; i++) n += v[r[i]] < v[r[i + 1]] ? -v[r[i]] : v[r[i]]; return n; };
+    const at = [...html.matchAll(/class="ring" data-at="([IVXL]+)·([IVXL]+)"/g)].map(m => [rom(m[1]), rom(m[2])]);
+    const code = at.map(([l, c]) => plain[(l - 1) * 23 + c - 1]).join('');
+    ok(code === 'DACIA', `cryptex plates (line·letter at w = 23) read ${code}`);
+    ok(at.every(([l, c]) => !(l === 7 && c >= 18)), 'plates avoid the CLAVIS DACIA ending');
   }
 
-  console.log('6. Orient Express');
+  console.log('6. Orient Express (integram)');
   {
-    const { cands, solutions, strangerPossible } = solveOrient();
-    ok(!strangerPossible, 'the stranger left (00:58) before the cake was set down whole (01:15)');
-    ok(cands.every(c => c.length === 1), 'each mark ties to exactly one passenger: ' + cands.map((c, i) => `${i + 1}:${c.join('/')}`).join(' '));
-    ok(solutions.length === 1 && new Set(solutions[0]).size === 12, `unique solution: all twelve (${solutions.length} solution(s))`);
+    const sols = solveOrient(), O = ORIENT;
+    ok(sols.length === 1, `the conductor's notes have exactly one solution (${sols.length})`);
+    if (sols.length === 1) {
+      const s = sols[0], six = O.people[s.c.indexOf(O.last)];
+      ok(six === O.answer, `No. ${O.last + 1}, next to the dining car: ${six}`);
+      console.log('       ' + O.people.map((p, i) => `${p} No.${s.c[i] + 1} ${O.dest[s.d[i]]} ${O.drink[s.k[i]]}`).join(' · '));
+    }
+    const needed = O.clues.map((_, i) => solveOrient(O.clues.filter((_, j) => j !== i)).length > 1);
+    ok(needed.every(Boolean), 'every note is needed' + (needed.every(Boolean) ? '' : ' (redundant: ' + needed.map((n, i) => n ? '' : i + 1).filter(Boolean) + ')'));
     const html = fs.readFileSync(path.join(SITE, await FL.path('ORIENT'), 'index.html'), 'utf8');
-    ok(/Send your conclusion to Monsieur Poirot: poirot@fl300\.xyz/.test(html.replace(/<[^>]+>/g, '')), 'last line present');
-    ok(!/<form class="answer"/.test(html), 'no answer box');
+    const notes = (html.match(/<ol class="notes">([\s\S]*?)<\/ol>/) || [, ''])[1].match(/<li>/g) || [];
+    ok(notes.length === O.clues.length, `page lists ${notes.length} notes (model has ${O.clues.length})`);
+    ok(/poirot&#64;fl300\.xyz/.test(html), 'burnt note carries poirot@fl300.xyz');
+    ok(!/<form class="answer"/.test(html), 'no answer box (the answer goes to Poirot)');
   }
 
   console.log('7. skandinavka');
@@ -267,9 +291,10 @@ async function verify(base) {
   console.log('10. Poirot matcher');
   {
     const { classify } = await import(path.join(ROOT, 'email-worker/src/match.js'));
-    const cases = [['svi', 'correct'], ['Svi su krivi!', 'correct'], ['all of them', 'correct'], ['Tous.', 'correct'], ['small', 'none'], ['nema', 'none'],
-      ['Ema', 'wrong'], ['Ema i Milos', 'none'], ['a stranger', 'stranger'], ['hmm no idea', 'none'],
-      ['Peđa', 'wrong'], ['> svi\nhmm', 'none'], ['Ema\n\nOn Tue, 10 Nov 2026 Poirot wrote:\n> svi', 'wrong']];
+    const cases = [['Nikola', 'correct'], ['Mislimo da je Nikola!', 'correct'], ['Bio je to nikola iz broja 6', 'correct'], ['Uhvatili smo Nikolu', 'correct'],
+      ['It was Nikola, No. 6', 'correct'], ['Milos', 'wrong'], ['Ema i Milos', 'wrong'], ['Peđa', 'wrong'], ['Mislimo da je Pedja', 'wrong'],
+      ['svi', 'none'], ['hmm no idea', 'none'], ['Nikolaj Tesla', 'none'], ['> Nikola\nhmm', 'none'],
+      ['Milos\n\nOn Tue, 10 Nov 2026 Poirot wrote:\n> Nikola', 'wrong']];
     for (const [t, want] of cases) { const got = classify(t); ok(got === want, `"${t.replace(/\n/g, '⏎')}" → ${got}`); }
   }
 
@@ -292,5 +317,10 @@ else if (cmd === 'glyphs') {
   }
   if (args[0] === 'all' && args[1]) for (const L in TEMPLAR) fs.writeFileSync(path.join(args[1], L + '.svg'), glyphSVG(L)); // whole alphabet, for comparing with dCode
 }
+else if (cmd === 'border') {
+  fs.writeFileSync(path.join(SITE, 'img', 'templar-border-h.svg'), borderSVG(false));
+  fs.writeFileSync(path.join(SITE, 'img', 'templar-border-v.svg'), borderSVG(true));
+  console.log('img/templar-border-h.svg, img/templar-border-v.svg (order ' + BORDER_ORDER + ')');
+}
 else if (cmd === 'verify') await verify(args[0]?.replace(/\/$/, ''));
-else console.log('usage: node tools/fl300.mjs hash <answer> | rot4 <text> | audio <freq> | glyphs | verify [https://fl300.xyz]');
+else console.log('usage: node tools/fl300.mjs hash <answer> | rot4 <text> | audio <freq> | glyphs | border | verify [https://fl300.xyz]');

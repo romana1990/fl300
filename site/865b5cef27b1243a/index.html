@@ -35,6 +35,29 @@
   .cyl { display: flex; justify-content: center; border-top: 2px solid #b9ae98; border-bottom: 2px solid #b9ae98; background: var(--stone); padding: .4rem 0; overflow: hidden; }
   .col { display: flex; flex-direction: column; align-items: center; font-family: "Marcellus", serif; color: var(--minium); line-height: 1.25; }
   footer[data-frag] { margin-top: 3rem; }
+
+  /* ---------- the cryptex ---------- */
+  .verse { font-family: "Marcellus", serif; font-size: clamp(.98rem, 4.2vw, 1.15rem); line-height: 1.55; text-align: center; margin: 3.2rem auto 1.6rem; }
+  .cryptex { display: flex; justify-content: center; align-items: flex-start; margin: 0 auto; user-select: none; -webkit-user-select: none; }
+  .cap { width: 30px; height: 132px; margin-top: 6px; background: linear-gradient(#4a3815, #b48a3c 18%, #f3dc96 40%, #d9b562 55%, #8a6a2a 80%, #3b2d10); transition: transform 1.8s cubic-bezier(.45,0,.2,1) .3s; }
+  .cap.l { border-radius: 12px 2px 2px 12px; } .cap.r { border-radius: 2px 12px 12px 2px; }
+  .ring { width: 52px; display: flex; flex-direction: column; align-items: center; outline: none; }
+  .drum { position: relative; width: 100%; height: 144px; overflow: hidden; touch-action: none; cursor: ns-resize;
+    background: linear-gradient(#1f1e1b, #8f897c 14%, #e6e0d2 34%, #f6f3ec 46%, #d8d1c1 66%, #6f695e 86%, #1f1e1b);
+    border-left: 3px solid #8a6a2a; border-right: 3px solid #8a6a2a; }
+  .drum span { position: absolute; left: 0; right: 0; top: 52px; height: 40px; line-height: 40px; text-align: center; font: 2rem "Marcellus", serif; color: #23211d; pointer-events: none; will-change: transform; }
+  .ring:focus-visible .drum { box-shadow: inset 0 0 0 2px var(--minium); }
+  .plate { margin-top: 8px; font-family: "Marcellus", serif; font-size: .78rem; letter-spacing: .04em; color: #5a4520; background: linear-gradient(#e9cf85, #c9a14c); padding: 2px 4px; border-radius: 2px; white-space: nowrap; }
+  .window { position: relative; }
+  .aperi { display: block; margin: 1.6rem auto 0; min-height: 48px; padding: 0 2rem; border: 1.5px solid var(--ink); background: var(--ink); color: var(--paper); font: 400 1rem "Marcellus", serif; letter-spacing: .3em; cursor: pointer; border-radius: 0; }
+  .aperi[disabled] { opacity: .5; }
+  #verdict { display: block; min-height: 1.5em; margin-top: .8rem; text-align: center; font-style: italic; letter-spacing: .03em; }
+  .open .cap.l { transform: translateX(-34px); } .open .cap.r { transform: translateX(34px); }
+  .drum span { transition: color .6s; } .open .drum span { color: #8a6a2a; }
+  .procede { display: none; width: max-content; margin: 1.2rem auto 0; font: 400 1rem "Marcellus", serif; letter-spacing: .3em; color: var(--ink); text-decoration: none; border-bottom: 1.5px solid var(--ink); padding-bottom: 2px; opacity: 0; transition: opacity .8s; }
+  .procede.show { display: block; } .procede.lit { opacity: 1; }
+  @keyframes jam { 0%,100% { transform: none; } 20% { transform: translateX(-6px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(2px); } }
+  .jam { animation: jam .4s; }
 </style>
 </head>
 <body data-stage="4">
@@ -55,11 +78,21 @@
   </div>
   <div class="cyl" id="cyl" aria-live="polite"></div>
 
-  <form class="answer" autocomplete="off">
-    <label for="ans">Clavis</label>
-    <div class="row"><input id="ans" autocapitalize="characters" spellcheck="false"><button type="submit">Enter</button></div>
-    <output class="verdict" aria-live="polite"></output>
-  </form>
+  <p class="verse">Where Peter stands, an emperor once stood;<br>his war is wound in marble, turn on turn.<br>Unwind the stone as only Romans could,<br>then line and letter, ring by ring, discern.</p>
+
+  <!-- each ring's plate: line · letter of the strip wound at 23 (see README) -->
+  <div class="window"><div class="cryptex" id="cx">
+    <div class="cap l"></div>
+    <div class="ring" data-at="II·XII"></div>
+    <div class="ring" data-at="I·IV"></div>
+    <div class="ring" data-at="IV·IX"></div>
+    <div class="ring" data-at="III·IX"></div>
+    <div class="ring" data-at="V·I"></div>
+    <div class="cap r"></div>
+  </div></div>
+  <button type="button" class="aperi" id="aperi">Aperi</button>
+  <output id="verdict" aria-live="polite"></output>
+  <a class="procede" id="procede" href="#">Procede &rarr;</a>
   <footer data-frag="iii"></footer>
 </main>
 <script src="/js/common.js"></script>
@@ -89,6 +122,76 @@ document.getElementById('dn').onclick = () => { range.value = +range.value - 1; 
 document.getElementById('up').onclick = () => { range.value = +range.value + 1; draw(); };
 addEventListener('resize', draw);
 document.fonts.ready.then(draw); draw();
+
+// ---------- cryptex ----------
+const ROW = 40, ABC = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', rings = [...document.querySelectorAll('.ring')], cx = document.getElementById('cx');
+const val = rings.map(() => Math.floor(Math.random() * 26));
+const verdict = document.getElementById('verdict'), aperi = document.getElementById('aperi');
+rings.forEach((ring, i) => {
+  ring.tabIndex = 0; ring.setAttribute('role', 'spinbutton'); ring.setAttribute('aria-label', `Ring ${i + 1}, ${ring.dataset.at}`);
+  ring.innerHTML = '<div class="drum">' + '<span></span>'.repeat(5) + '</div><div class="plate"></div>';
+  ring.querySelector('.plate').textContent = ring.dataset.at;
+  const drum = ring.querySelector('.drum'), spans = [...drum.children];
+  // pos: continuous letter position (follows the finger); val[i] = nearest letter
+  let pos = val[i], anim = null;
+  const render = () => {
+    const base = Math.round(pos), frac = pos - base;
+    spans.forEach((el, j) => {
+      const k = j - 2, d = k - frac, a = Math.min(Math.abs(d), 2);
+      el.textContent = ABC[((base + k) % 26 + 26) % 26];
+      el.style.transform = `translateY(${d * ROW}px) scale(${1 - 0.22 * Math.min(a, 1)})`;
+      el.style.opacity = Math.max(0, 1 - 0.62 * a);
+    });
+    const v = ((base % 26) + 26) % 26;
+    if (v !== val[i]) { val[i] = v; verdict.textContent = ''; }
+    ring.setAttribute('aria-valuetext', ABC[v]);
+  };
+  const glide = to => { // ease pos → to
+    cancelAnimationFrame(anim); const from = pos, t0 = performance.now(), T = 160;
+    const f = t => { const u = Math.min(1, (t - t0) / T); pos = from + (to - from) * (1 - (1 - u) ** 3); render(); if (u < 1) anim = requestAnimationFrame(f); };
+    anim = requestAnimationFrame(f);
+  };
+  const step = dir => glide(Math.round(pos) + dir);
+  ring.set = v => { cancelAnimationFrame(anim); pos = v; render(); };
+  render();
+  let drag = null;
+  drum.addEventListener('pointerdown', e => { cancelAnimationFrame(anim); drag = { y: e.clientY, y0: e.clientY }; drum.setPointerCapture(e.pointerId); e.preventDefault(); ring.focus({ preventScroll: true }); });
+  drum.addEventListener('pointermove', e => {
+    if (!drag) return;
+    pos -= (e.clientY - drag.y) / ROW; drag.y = e.clientY; render(); // finger down → earlier letters roll in
+  });
+  drum.addEventListener('pointerup', e => {
+    if (!drag) return;
+    if (Math.abs(e.clientY - drag.y0) < 6) { const r = drum.getBoundingClientRect(); step(e.clientY < r.top + r.height / 2 ? -1 : 1); }
+    else glide(Math.round(pos)); // no momentum: the letter under the bar is the one you get
+    drag = null;
+  });
+  drum.addEventListener('pointercancel', () => { drag = null; glide(Math.round(pos)); });
+  drum.addEventListener('wheel', e => { e.preventDefault(); step(e.deltaY > 0 ? 1 : -1); }, { passive: false });
+  ring.addEventListener('keydown', e => {
+    if (e.key === 'ArrowUp') { e.preventDefault(); step(-1); }
+    else if (e.key === 'ArrowDown') { e.preventDefault(); step(1); }
+    else if (e.key === 'Enter') open();
+    else if (/^[a-z]$/i.test(e.key)) { ring.set(ABC.indexOf(e.key.toUpperCase())); (rings[i + 1] || aperi).focus(); }
+  });
+});
+const jam = msg => { cx.classList.remove('jam'); void cx.offsetWidth; cx.classList.add('jam'); verdict.textContent = msg; };
+async function open() {
+  const code = val.map(v => ABC[v]).join('');
+  if (code === 'APPLE') return jam('Wrong orb, Professor Langdon. This is not London.');
+  aperi.disabled = true;
+  try {
+    const p = await FL.path(code), r = await fetch(p, { method: 'HEAD', cache: 'no-store' });
+    if (r.ok) { // open slowly, then let them walk on themselves
+      cx.classList.add('open'); rings.forEach(r => r.style.pointerEvents = 'none'); aperi.style.visibility = 'hidden';
+      const go = document.getElementById('procede'); go.href = p;
+      setTimeout(() => { verdict.textContent = 'Aperitur.'; go.classList.add('show'); requestAnimationFrame(() => requestAnimationFrame(() => go.classList.add('lit'))); }, 2100);
+      return;
+    }
+  } catch {}
+  aperi.disabled = false; jam('Verbum falsum est.');
+}
+aperi.addEventListener('click', open);
 </script>
 </body>
 </html>

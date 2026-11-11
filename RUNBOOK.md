@@ -16,9 +16,9 @@ Dario's checklist for the 30th‑birthday hunt. The build spec for Claude is `PR
 | 1 | LAPIS | Sum the capital Roman numerals in the chronogram | **1331** at fl300.xyz | pastelink |
 | 2 | NAVIGATIO | PWR on → tune 133.100 Radar → hear "transmissions on 121.5" → tune 121.500 → numbers station → find fixes on the ILS 12L chart | **DRAKUL** | — |
 | 3 | CORVINVS | Book cipher on Harker's diary (hosted): date · paragraph · word, first letter | **TRAIANUS** | — |
-| 4 | COLVMNA | Slide windings to 23 (Trajan's Column frieze) → Latin reads → ends CLAVIS DACIA | **DACIA** | — |
-| 5 | CINEMA | Shazam six clips, Nth letter of each title | **ORIENT** | Shazam |
-| 6 | ORIENT EXPRESS | Logic puzzle; the 12 players stabbed the cake | email **"all of them"** to poirot@fl300.xyz | email |
+| 4 | COLVMNA | Slide windings to 23 (Trajan's Column frieze) → Latin reads → cryptex plates (line·letter) pick D A C I A; also ends CLAVIS DACIA. APPLE is a red herring | **DACIA** | — |
+| 5 | CINEMA | Watch six clips, name each film's star; the one film all six share is *Murder on the Orient Express* (2017) | **ORIENT** (also ORIENT EXPRESS, THE ORIENT EXPRESS, MURDER ON THE ORIENT EXPRESS) | IMDb |
+| 6 | ORIENT EXPRESS | Warm the burnt note (Poirot's question + address); integram from the conductor's 10 notes → who is in No. 5, next to the dining car | email **"Nikola"** to poirot@fl300.xyz | email |
 | 7 | CRVCIVERBVM | Skandinavka, shaded cells | **MALTEŠKI KRST** | — |
 | 8 | MELITA | Decode the six footer glyphs with the Templar cipher | **MELITA** | — |
 | 9 | Invite | — | — | — |
@@ -27,7 +27,7 @@ Glyphs: I cockpit **M** · II Corvin **E** · III Column **L** · IV Cinema **I*
 
 Numbers station decode: 15.7 BGD·1 **D**EVDA · 12.9 BGD·3 OB**R** · 11.7 BGD·2 L**A**BUD · R321 BGD·3 TI**K**VU · 11.7 BGD·4 LAB**U**D · 28.0 VAL·1 **L**OGAR.
 
-Cinema clips (in this order): 1 Poirot (II→O) · 2 Pirates of the Caribbean (III→R) · 3 Gladiator (V→I) · 4 Sherlock BBC (III→E) · 5 Top Gun (VI→N) · 6 Troy (I→T).
+Cinema clips (in this order) → star → role in *Murder on the Orient Express* (2017): 1 Harry Potter and the Chamber of Secrets → Kenneth Branagh (Lockhart) → Poirot · 2 Pirates of the Caribbean → Johnny Depp → Ratchett · 3 Star Wars: The Force Awakens → Daisy Ridley → Mary Debenham · 4 Frozen → Josh Gad (Olaf) → MacQueen · 5 Skyfall → Judi Dench (M) → Princess Dragomiroff · 6 Spider-Man (2002) → Willem Dafoe (Green Goblin) → Hardman.
 
 ---
 
@@ -134,9 +134,10 @@ Short three‑tone chime, then slowly, ~3 s pause between groups, repeat from th
 
 ## 5. Cinema reel
 
-- Six clips, ~10–15 s each, the **most recognisable** moment of each theme, in order: **Poirot · Pirates of the Caribbean · Gladiator · Sherlock (BBC) · Top Gun · Troy**.
-- Black screen, only the clip number (1–6) shown during each clip. The blanks/numerals are on the web page, not in the video.
-- **Test every clip with Shazam** from a phone speaker. If one doesn't identify, choose a different moment.
+- Six clips, ~10–15 s each, in order: **Harry Potter and the Chamber of Secrets** (Hedwig's Theme, Lockhart on screen) · **Pirates of the Caribbean** (He's a Pirate, Jack Sparrow) · **Star Wars: The Force Awakens** (Rey's Theme, Rey) · **Frozen** ("In Summer", Olaf) · **Skyfall** (Adele's "Skyfall" or the score under M) · **Spider-Man 2002** (Elfman's theme, the Green Goblin).
+- **Show the star on screen** in each clip: the face identifies both the film and which cast member counts; the soundtrack plays underneath for atmosphere. Josh Gad is a voice, so Olaf singing is the clip. Clip number (1–6) in a corner.
+- On the page: the reel, a film strip of six frames (tap to replay that reel; start times in `START` in the page script, thumbnails `site/v/t1–t6.jpg`), then a "Coming soon" poster with six "?" stars, "Six stars. One train. Name it." and the answer box. If you re-cut the reel, tell Claude to redo the start times and thumbnails.
+- Each clip should be recognisable from the picture alone; the music is atmosphere.
 - H.264 MP4, ≤ 1080p, **< 25 MB** (Cloudflare Pages limit).
 
 ---
@@ -149,9 +150,8 @@ No Gmail, no n8n, nothing on your home server. Everything runs on Cloudflare's f
 1. A player emails `poirot@fl300.xyz`.
 2. The Email Worker (Claude builds it in `email-worker/`) **forwards a copy to your Proton**. It always does this.
 3. It checks the text, matching whole words only, and replies **from `poirot@fl300.xyz`** in the same thread:
-   - **Correct**: any of `svi, sve, svako, svaki, svih, dvanaest, zajedno, everyone, everybody, all, twelve, 12, tous, toutes, ensemble` → Correct reply.
-   - **Stranger**: `stranger, stranac, nepoznat, uniform(a), kondukter, conductor` → Stranger reply.
-   - **Exactly one player's name** → Wrong reply.
+   - **Correct**: `Nikola` in any case (Nikola, Nikole, Nikoli, Nikolu, Nikolom) → Correct reply.
+   - **Another guest's name** (no Nikola) → Wrong reply.
    - **Anything else** → no reply. It shows up highlighted in **"Poirot's post"** on your board, and you answer it by hand from Proton. Those replies come from your Proton address, which is fine because everyone knows Poirot is you.
 4. Senders whose email provider fails DMARC (rare: Gmail, iCloud, Outlook and Proton all pass) get no automatic reply and appear highlighted too.
 
@@ -160,18 +160,18 @@ No Gmail, no n8n, nothing on your home server. Everything runs on Cloudflare's f
 2. **Destination addresses** → add your Proton address → click the verification link in Proton.
 3. In `email-worker/wrangler.toml` set `FORWARD_TO` to your Proton address, then `npx wrangler deploy` from `email-worker/` (Claude will walk you through it).
 4. Email Routing → **Routing rules** → custom address `poirot` → action **Send to a Worker** → the Poirot worker.
-5. Test from your Gmail/iCloud (not Proton, so the test is realistic): send "svi", "Ema", "a stranger", "hmm". Check the replies, the Proton copies and the board.
+5. Test from your Gmail/iCloud (not Proton, so the test is realistic): send "Nikola", "Uhvatili smo Nikolu", "Ema", "hmm". Check the replies, the Proton copies and the board.
 
 The reply texts live in `email-worker/replies.js`. Edit there, then `npx wrangler deploy` again.
 
 **If the Worker breaks mid‑game:** in Routing rules, switch `poirot@` to **Send to an email → your Proton** and reply to everything by hand with the texts below. Players won't notice anything except slower replies.
 
 **Correct reply** (Claude fills in the skandinavka URL and the Fragmentum V image; keep a copy handy for manual replies):
-> Mes amis,
+> Précisément, mon ami.
 >
-> Twelve marks upon the cake. Some deep, some timid, one from a left hand, one that hesitated. Not the work of one hand, but of twelve. Each of you had a reason; each of you swore for another; and so each of you is guilty.
+> Compartment No. 5, the one beside the dining car. Mineral water, a ticket to Zagreb, and crumbs on the sleeve: Nikola.
 >
-> There are, as always, two solutions. The first: a stranger in the uniform of the Wagon‑Lit boarded at Vinkovci, ate the cake, and disappeared into the snow. The second you have just written to me. I shall offer the first to the Yugoslav police — and say nothing more.
+> I shall say nothing to the Compagnie. A man is entitled to cake on a birthday journey, even when it is not his birthday.
 >
 > Your journey continues: **https://fl300.xyz/…/**
 >
@@ -179,12 +179,8 @@ The reply texts live in `email-worker/replies.js`. Edit there, then `npx wrangle
 >
 > Hercule Poirot
 
-**Stranger reply:**
-> Ah, the man in the Wagon‑Lit uniform who vanished at Vinkovci. C'est possible. That is the solution I shall give to the police. But to me, mon ami, you will tell the truth.
-> — H.P.
-
 **Wrong reply:**
-> Non, non, mon ami. The little grey cells, they are not yet working.
+> Non, non, mon ami. That passenger slept far from the dining car. Read the conductor's notes again; the little grey cells, they must work.
 > — H.P.
 
 ---
@@ -201,8 +197,8 @@ Use your **phone**, mobile data, private browser tab. Callsign `TEST`.
 - [ ] Decode the numbers station from the chart only → DRAKUL. Zoom chart on phone; PDF link opens.
 - [ ] Corvin: decode all 8 refs by actually counting on the page → TRAIANUS.
 - [ ] Column: slider at 23 reads clearly; no other value looks like Latin.
-- [ ] Cinema: video plays inline on iPhone; Shazam each clip from the phone speaker → ORIENT.
-- [ ] Orient: solve the logic honestly (or check Claude's solution walkthrough); send emails: "svi", "all of them", "Ema", "a stranger", "hmm no idea" → check each reply, the Proton copies, and that "hmm no idea" is highlighted in Poirot's post on the board.
+- [ ] Cinema: video plays inline on iPhone; check each clip is recognisable on a phone screen; the six stars → Murder on the Orient Express → ORIENT.
+- [ ] Orient: warm the note on the phone; solve the grid honestly (or check the README walkthrough); send emails: "Nikola", "Uhvatili smo Nikolu", "Ema", "hmm no idea" → check each reply, the Proton copies, and that "hmm no idea" is highlighted in Poirot's post on the board.
 - [ ] Skandinavka: fill on phone (tap‑typing usable?), print the PDF once, shaded → MALTEŠKI KRST; both `MALTESKI KRST` and `malteški krst` accepted.
 - [ ] Meta: collect glyphs I–VI (incl. the one in the email), decode with dCode Templar → MELITA.
 - [ ] Invite: details correct, address correct.
