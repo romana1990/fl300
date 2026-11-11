@@ -23,6 +23,7 @@
   form.answer button { font-weight: 700; }
   #cs-form .row { border-color: #555; }
   form.answer input::placeholder { color: #444; }
+  #cs-form .hint { display: block; margin-top: .5rem; font-size: .75rem; line-height: 1.4; color: #8a8a8a; }
 </style>
 </head>
 <body data-stage="1">
@@ -30,7 +31,8 @@
   <p>Hello.</p>
   <form class="answer callsign" id="cs-form" autocomplete="off">
     <label for="cs">Callsign</label>
-    <div class="row"><input id="cs" name="cs" maxlength="24" placeholder="Your team" autocapitalize="characters" spellcheck="false"><button type="submit" aria-label="Save callsign">OK</button></div>
+    <div class="row"><input id="cs" name="cs" maxlength="24" placeholder="Your team" aria-describedby="cs-hint" autocapitalize="characters" spellcheck="false"><button type="submit" aria-label="Save callsign">OK</button></div>
+    <small class="hint" id="cs-hint">Any team name you like, up to 24 characters. Use the same one on every phone.</small>
     <output class="verdict" aria-live="polite"></output>
   </form>
   <form class="answer" autocomplete="off">

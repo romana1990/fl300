@@ -51,11 +51,12 @@ Answers are normalised before hashing (diacritics off, đ→D, J→I, U→V, onl
 `content/pastelink.txt`:
 
 ```
-soL orItVr; aVIator CaeLVM petIt.
-post trIgInta annos aLtIVs VoLat.
+aLIs VoLat proprIIs.
+post tenebras LVX.
+Labor oMnIa VInCIt.
 ```
 
-*"The sun rises; the aviator seeks the sky. After thirty years he flies higher."* M 1000 + C 100 + 4 L 200 + 5 V 25 + 6 I 6 = **1331**. Written with V for U throughout (classical and chronogram practice), so no lowercase u can be mistaken for an uncounted V. No D anywhere and only one M, by construction. **Needs a Latinist's check (not Zorana).** *Aviator* is late/Neo-Latin; if the Latinist objects, *avis caelum petit* also sums to 1331.
+*"She flies on her own wings. After darkness, light. Work conquers all."* Three real mottos: *alis volat propriis* (Oregon), *post tenebras lux* (Geneva, nod to the dark opener image), *labor omnia vincit* (Virgil, Georgics I). L 4×50 + I 6×1 + V 3×5 + X 10 + C 100 + M 1000 = **1331**. Written with V for U (classical and chronogram practice), so no lowercase u can be mistaken for an uncounted V. No D, one M.
 
 ## Cockpit audio (stage 2)
 
