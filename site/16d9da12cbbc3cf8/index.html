@@ -62,6 +62,7 @@
   table.int td.l { border-left-width: 2.5px; } table.int tr.t td { border-top-width: 2.5px; }
   table.int td button { display: block; width: var(--cell); height: calc(var(--cell) + 4px); border: 0; background: transparent; font: 700 calc(var(--cell) * .62) "Courier Prime", monospace; color: var(--carbon); cursor: pointer; padding: 0; }
   table.int td button.x { color: #a8a5bd; }
+  table.int td button.x.a { color: #c9c6d8; } /* ✗ implied by a ✓ in the same row/column */
   table.int td button.v { color: var(--paper); background: var(--carbon); }
   .tools { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 10px; font-size: 12px; color: #55587e; }
   .tools button { border: 1px solid var(--carbon); background: transparent; color: var(--carbon); font: 400 12px "Courier Prime", monospace; padding: 6px 10px; cursor: pointer; border-radius: 0; flex: none; }
@@ -166,7 +167,7 @@
   const KEY = 'fl300.int5', MARK = ['', '✗', '✓'], CLS = ['', 'x', 'v'];
   let st = {}; try { st = JSON.parse(localStorage.getItem(KEY)) || {}; } catch {}
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch {} };
-  const t = document.getElementById('int'), cells = {}, id = (a, i, b, j) => `${a}${i}${b}${j}`;
+  const t = document.getElementById('int'), cells = {}, line = {}, id = (a, i, b, j) => `${a}${i}${b}${j}`;
   let h = '<thead><tr><th></th>' + COLS.map(c => `<th class="grp" colspan="5">${CAT[c][0]}</th>`).join('') + '</tr><tr><th></th>';
   for (const c of COLS) h += CAT[c][1].map(v => `<th class="col${c === 'C' ? ' n' : ''}"><span>${v}</span></th>`).join('');
   t.innerHTML = h + '</tr></thead>';
@@ -180,16 +181,20 @@
       const k = id(r, i, c, j), b = document.createElement('button');
       b.type = 'button'; b.setAttribute('aria-label', `${rv} – ${cv}`);
       b.addEventListener('click', () => {
-        st[k] = ((st[k] || 0) + 1) % 3;
-        if (st[k] === 2) for (let n = 0; n < 5; n++) for (const o of [id(r, i, c, n), id(r, n, c, j)]) if (o !== k && !st[o]) st[o] = 1; // ✓ crosses its row and column
+        const next = (shown(k) + 1) % 3; // cycles what the player sees: blank → ✗ → ✓ → blank
+        if (next) st[k] = next; else delete st[k];
         save(); draw();
       });
-      cells[k] = b; td.append(b); tr.append(td);
+      cells[k] = b; line[k] = [...Array(5)].flatMap((_, n) => [id(r, i, c, n), id(r, n, c, j)]).filter(o => o !== k); td.append(b); tr.append(td);
     });
     tb.append(tr);
   });
   t.append(tb);
-  const draw = () => { for (const k in cells) { const v = st[k] || 0; cells[k].textContent = MARK[v]; cells[k].className = CLS[v]; } };
+  // Only the player's own marks are stored. A ✓ crosses its row and column on the fly, so removing the ✓ removes those ✗s;
+  // ✗s the player placed by hand stay. (Saves from before this change keep their old auto-✗s as hand-placed ones.)
+  const auto = k => !st[k] && line[k].some(o => st[o] === 2);
+  const shown = k => st[k] || (auto(k) ? 1 : 0);
+  const draw = () => { for (const k in cells) { const v = shown(k); cells[k].textContent = MARK[v]; cells[k].className = CLS[v] + (auto(k) ? ' a' : ''); } };
   document.getElementById('reset').addEventListener('click', () => { st = {}; save(); draw(); });
   draw();
 })();
