@@ -33,11 +33,20 @@ const FL = {
     } catch { return ''; }
   },
 
+  // no callsign: a stable per-device id, so nameless players don't merge into one board row
+  anon() {
+    try {
+      let a = localStorage.getItem('fl300.anon');
+      if (!a) localStorage.setItem('fl300.anon', a = 'anon-' + Math.random().toString(36).slice(2, 6));
+      return a;
+    } catch { return 'anon'; }
+  },
+
   ping(stage) {
     try {
       fetch('/api/ping', {
         method: 'POST', keepalive: true, headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ c: FL.callsign() || 'anon', s: String(stage) })
+        body: JSON.stringify({ c: FL.callsign() || FL.anon(), s: String(stage) })
       }).catch(() => {});
     } catch {}
   },
