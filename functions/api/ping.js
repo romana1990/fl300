@@ -11,8 +11,13 @@ export async function onRequestPost({ request, env }) {
   const key = 't:' + c.toUpperCase();
   const { metadata } = await env.FL300.getWithMetadata(key);
   const m = metadata || { c, st: {} };
-  if (m.st[s]) return new Response(null, { status: 204 }); // only the first visit counts; saves KV writes
-  m.st[s] = Date.now();
+  const cf = request.cf || {};
+  const loc = [[cf.city, cf.country].filter(Boolean).join(', '), cf.asOrganization].filter(Boolean).join(' · ').slice(0, 60);
+  m.loc = m.loc || [];
+  const newLoc = loc && !m.loc.includes(loc);
+  if (m.st[s] && !newLoc) return new Response(null, { status: 204 }); // write only on a first stage visit or an unseen location; saves KV writes
+  if (newLoc) m.loc = [...m.loc, loc].slice(-4); // last 4 distinct places, keeps metadata under KV's 1 KB
+  m.st[s] ||= Date.now();
   await env.FL300.put(key, '', { metadata: m });
   return new Response(null, { status: 204 });
 }

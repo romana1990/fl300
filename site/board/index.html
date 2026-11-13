@@ -39,9 +39,9 @@ async function load() {
     const d = await r.json();
     const teams = d.teams.map(m => { const s = Object.keys(m.st).map(Number).sort((a, b) => a - b); return { ...m, s, last: s[s.length - 1] }; })
       .sort((a, b) => b.last - a.last || a.st[a.last] - b.st[b.last]);
-    let h = '<tr><th>Callsign</th><th>Stage</th><th>Reached</th><th>Stuck for</th>' + Object.values(NAMES).slice(1).map(n => `<th>${n}</th>`).join('') + '</tr>';
+    let h = '<tr><th>Callsign</th><th>Seen from</th><th>Stage</th><th>Reached</th><th>Stuck for</th>' + Object.values(NAMES).slice(1).map(n => `<th>${n}</th>`).join('') + '</tr>';
     for (const m of teams) {
-      h += `<tr><td>${esc(m.c)}</td><td>${m.last} ${NAMES[m.last]}</td><td class="n">${t(m.st[m.last])}</td><td class="n">${m.last < 9 ? dur(d.now - m.st[m.last]) : '—'}</td>`;
+      h += `<tr><td>${esc(m.c)}</td><td class="sub">${(m.loc || []).map(esc).join('<br>')}</td><td>${m.last} ${NAMES[m.last]}</td><td class="n">${t(m.st[m.last])}</td><td class="n">${m.last < 9 ? dur(d.now - m.st[m.last]) : '—'}</td>`;
       for (let i = 2; i <= 9; i++) { const a = m.st[i], p = m.st[i - 1]; h += `<td class="n">${a ? (p ? dur(a - p) : '✓') : ''}</td>`; }
       h += '</tr>';
     }
